@@ -39,6 +39,7 @@
 - (IBAction)saveOrUnsave:(id)sender;
 //@property (weak, nonatomic) IBOutlet UIButton *saveButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *saveButton;
+@property (strong, nonatomic) IBOutlet UILabel *title_name;
 
 /* delegate property */
 @property (weak, nonatomic) id<UpdateUserDefaultViewDelegate> delegate;

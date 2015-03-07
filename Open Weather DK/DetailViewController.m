@@ -151,9 +151,14 @@
     NSString *night_temC = [[NSString stringWithFormat:@"%@", [[[[data objectForKey:@"list"]objectAtIndex:0]objectForKey:@"temp"]objectForKey:@"night"]] KtoC];
     night_tempC.text = [NSString stringWithFormat:@"Night:     %@°C", night_temC];
     
-    UILabel *city_name = [[UILabel alloc]initWithFrame:CGRectMake(10, self.height/3, self.width/2, self.height/7)];
+    UILabel *description = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height/12*3, self.width/2, self.height/6)];
+    description.text = [[[[[data objectForKey:@"list"]objectAtIndex:0]objectForKey:@"weather"]objectAtIndex:0]objectForKey:@"description"];
+    
+    UILabel *city_name = [[UILabel alloc]initWithFrame:CGRectMake(self.width/2, 20, self.width/2, self.height/6)];
     city_name.text = [city objectForKey:@"name"];
-    UILabel *country = [[UILabel alloc]initWithFrame:CGRectMake(10, self.height/2.7, self.width/2, self.height/6)];
+    self.title_name.text = [city objectForKey:@"name"];
+    ;
+    UILabel *country = [[UILabel alloc]initWithFrame:CGRectMake(self.width/2, 20 + self.height/12, self.width/2, self.height/6)];
     country.text = [city objectForKey:@"country"];
     
     [self.BaseScrollView addSubview:city_name];
@@ -161,6 +166,20 @@
     [self.BaseScrollView addSubview:morn_tempC];
     [self.BaseScrollView addSubview:eve_tempC];
     [self.BaseScrollView addSubview:night_tempC];
+    [self.BaseScrollView addSubview:description];
+    
+    // configure base scroll view lower labels
+    UILabel *humidity = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height, self.width/2, self.height/6)];
+    humidity.text = @"humidity";
+    UILabel *pressure = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height*13/12, self.width/2, self.height/6)];
+    pressure.text = @"pressure";
+    UILabel *wind_speed = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height*7/6, self.width/2, self.height/6)];
+    wind_speed.text = @"wind speed";
+    
+    [self.BaseScrollView addSubview:humidity];
+    [self.BaseScrollView addSubview:pressure];
+    [self.BaseScrollView addSubview:wind_speed];
+
 }
 
 - (void)viewDidLoad {

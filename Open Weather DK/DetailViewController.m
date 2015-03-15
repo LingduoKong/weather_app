@@ -196,36 +196,52 @@
     NSDictionary *city = [data objectForKey:@"city"];
     
     // configure base scroll upper labels
-    UILabel *morn_tempC = [[UILabel alloc]initWithFrame:CGRectMake(10, 20, self.width/2, self.height/6)];
+    UILabel *morn_tempC = [[UILabel alloc]initWithFrame:CGRectMake(0, self.height/9, self.width/3, self.height/6)];
     NSString *morn_temC = [[NSString stringWithFormat:@"%@", [[[[data objectForKey:@"data"]objectAtIndex:0]objectForKey:@"temp"]objectForKey:@"morn"]] KtoC];
-    morn_tempC.text = [NSString stringWithFormat:@"Morning: %@°C", morn_temC];
+    morn_tempC.numberOfLines = 3;
+    morn_tempC.textAlignment = NSTextAlignmentCenter;
+    morn_tempC.font = [morn_tempC.font fontWithSize:25];
+    morn_tempC.text = [NSString stringWithFormat:@"Morning\n\n%@°C", morn_temC];
     
-    UILabel *eve_tempC = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height/12, self.width/2, self.height/6)];
+    UILabel *eve_tempC = [[UILabel alloc]initWithFrame:CGRectMake(self.width/3, self.height/9, self.width/3, self.height/6)];
     NSString *eve_temC = [[NSString stringWithFormat:@"%@", [[[[data objectForKey:@"data"]objectAtIndex:0]objectForKey:@"temp"]objectForKey:@"eve"]] KtoC];
-    eve_tempC.text = [NSString stringWithFormat:@"Evening: %@°C", eve_temC];
+    eve_tempC.numberOfLines = 3;
+    eve_tempC.textAlignment = NSTextAlignmentCenter;
+    eve_tempC.font = [eve_tempC.font fontWithSize:25];
+    eve_tempC.text = [NSString stringWithFormat:@"Evening\n\n%@°C", eve_temC];
     
-    UILabel *night_tempC = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height/12*2, self.width/2, self.height/6)];
+    UILabel *night_tempC = [[UILabel alloc]initWithFrame:CGRectMake(self.width/3*2, self.height/9, self.width/3, self.height/6)];
     NSString *night_temC = [[NSString stringWithFormat:@"%@", [[[[data objectForKey:@"data"]objectAtIndex:0]objectForKey:@"temp"]objectForKey:@"night"]] KtoC];
-    night_tempC.text = [NSString stringWithFormat:@"Night:     %@°C", night_temC];
+    night_tempC.numberOfLines = 3;
+    night_tempC.textAlignment = NSTextAlignmentCenter;
+    night_tempC.font = [night_tempC.font fontWithSize:25];
+    night_tempC.text = [NSString stringWithFormat:@"Night\n\n%@°C", night_temC];
     
-    UILabel *description = [[UILabel alloc]initWithFrame:CGRectMake(10, 20+self.height/12*3, self.width/2, self.height/6)];
+    UILabel *description = [[UILabel alloc]initWithFrame:CGRectMake(0, self.height/12*3, self.width, self.height/6)];
+    description.textAlignment = NSTextAlignmentCenter;
+    description.font = [description.font fontWithSize:20];
     description.text = [[[[[data objectForKey:@"data"]objectAtIndex:0]objectForKey:@"weather"]objectAtIndex:0]objectForKey:@"description"];
     
     self.title_name.text = [city objectForKey:@"name"];
-    UILabel *country = [[UILabel alloc]initWithFrame:CGRectMake(self.width/2, 20 + self.height/12, self.width/2, self.height/6)];
     
+    UILabel *country = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, self.width/3, self.height/6)];
     // convert country code to country name
     NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     country.text = [locale displayNameForKey: NSLocaleCountryCode
                                                 value: [city objectForKey:@"country"]];
+    country.textAlignment = NSTextAlignmentCenter;
     
     // get current time zone by coordinates
     NSDictionary *coords = city[@"coord"];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:[[coords objectForKey:@"lat"] doubleValue] longitude:[[coords objectForKey:@"lon"] doubleValue]];
     
     _timeZone = [[APTimeZones sharedInstance] timeZoneWithLocation:location];
+    _Timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+    _timeDisplayer = [[UILabel alloc] initWithFrame:CGRectMake(self.width/3, 0, self.width/3*2, self.height/6)];
+    _timeDisplayer.textAlignment = NSTextAlignmentCenter;
     
     [self.BaseScrollView addSubview:country];
+    [self.BaseScrollView addSubview:_timeDisplayer];
     [self.BaseScrollView addSubview:morn_tempC];
     [self.BaseScrollView addSubview:eve_tempC];
     [self.BaseScrollView addSubview:night_tempC];
@@ -320,9 +336,6 @@
     
     [self configureView];
     
-    _Timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-    _timeDisplayer = [[UILabel alloc] initWithFrame:CGRectMake(self.width/2, 20+self.height/12*3, self.width/2, self.height/6)];
-    [self.BaseScrollView addSubview:_timeDisplayer];
     _dateFormatter = [[NSDateFormatter alloc] init];
     [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     [_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];

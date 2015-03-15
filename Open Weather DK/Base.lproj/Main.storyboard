@@ -561,7 +561,7 @@ Help tips:
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.63921570780000003" blue="0.83137261870000001" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="backgroundColor" red="0.74360233750000004" green="0.97170538539999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="8DS-x4-G2D" secondAttribute="centerX" id="41k-iO-UXt"/>
                             <constraint firstItem="tI5-Ni-kRn" firstAttribute="leading" secondItem="vlN-fz-UyD" secondAttribute="leadingMargin" constant="-16" id="D9D-Ly-MaJ"/>

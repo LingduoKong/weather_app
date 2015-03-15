@@ -212,6 +212,11 @@
     [tempDict setObject:@"3451190" forKey:@"id"];
     [tempDict setObject:@"Rio de Janeiro" forKey:@"name"];
     [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"4887442" forKey:@"id"];
+    [tempDict setObject:@"Chicago Heights" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
 
 }
 @end

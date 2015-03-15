@@ -48,7 +48,7 @@
  ********************************************************************************************/
 
 - (void)downloadByCityID {
-//    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?id=%@&mode=json", self.detailItem];
+    
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/%@.json", self.detailItem];
     NSLog(@"[DetailViewController] get details of city id %@ from url: %@", self.detailItem, url);
     
@@ -69,6 +69,7 @@
                                                                      NSLog(@"[DetailViewController] Problem with Data");
                                                                  });
                                                              }];
+    self.ActivityIndicator.hidden = YES;
 }
 
 /********************************************************************************************
@@ -314,6 +315,8 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.width = self.view.frame.size.width;
     self.height =self.view.frame.size.height;
+    
+    [self.view bringSubviewToFront:self.ActivityIndicator];
     
     [self configureView];
     

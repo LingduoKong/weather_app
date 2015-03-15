@@ -95,9 +95,9 @@
     Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
     NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
     if (networkStatus == NotReachable) {
-        UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Network Unavailable" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        
-        [failAlert show];
+//        UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Network Unavailable" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//        
+//        [failAlert show];
         return NO;
     } else {
         return YES;

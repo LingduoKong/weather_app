@@ -12,6 +12,7 @@
  ********************************************************************************************/
 
 #import "UserDefautViewController.h"
+#import "Reachability.h"
 
 @interface UserDefautViewController ()
 @property UIViewController* vc;
@@ -19,6 +20,24 @@
 @end
 
 @implementation UserDefautViewController
+
+- (BOOL) isNetworkAvailable {
+    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
+    if (networkStatus == NotReachable) {
+        UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:@"Network Unavailable" message:@"App doesn't work!\nPlease check network and launch again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [failAlert show];
+        self.searchButton.enabled = NO;
+        self.settingButton.enabled = NO;
+        self.mapButton.enabled = NO;
+        return NO;
+    } else {
+        self.searchButton.enabled = YES;
+        self.settingButton.enabled = YES;
+        self.mapButton.enabled = YES;
+        return YES;
+    }
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -55,6 +74,13 @@
         
         NSLog(@"Splash screen is showing");
     }];
+    
+    if (![self isNetworkAvailable]) {
+        [self.vc dismissViewControllerAnimated:YES completion:^{}];
+        self.vc=nil;
+        NSLog(@"[UserDefaultViewController] dismiss splash view");
+        return;
+    }
         
     // locationManager initialization
     self.locationManager = [[CLLocationManager alloc] init];
@@ -63,8 +89,6 @@
     [self.locationManager setDistanceFilter:1000];
     
     [self.locationManager requestWhenInUseAuthorization];
-    
-    //[self.locationManager startUpdatingLocation];
     
     // load user defaults data
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -97,7 +121,6 @@
         self.vc=nil;
         NSLog(@"[UserDefaultViewController] dismiss splash view");
     }
-//    [self.vc dismissViewControllerAnimated:YES completion:^{}];
     
     [self addAllCities];
     
@@ -218,8 +241,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         // day mode
         cell.cityName.textColor = [UIColor blackColor];
     }
-    
-//    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", self.AllCityIds[indexPath.row]];
     
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", self.AllCityIds[indexPath.row]];
     NSLog(@"[UserDefaultViewController] get city with id %@ from url: %@", self.AllCityIds[indexPath.row], url);
@@ -613,6 +634,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     tempDict = [[NSMutableDictionary alloc] init];
     [tempDict setObject:@"3451190" forKey:@"id"];
     [tempDict setObject:@"Rio de Janeiro" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"4887442" forKey:@"id"];
+    [tempDict setObject:@"Chicago Heights" forKey:@"name"];
     [_allCityNames addObject:tempDict];
 }
 

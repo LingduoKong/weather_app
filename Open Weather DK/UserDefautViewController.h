@@ -40,5 +40,8 @@
 @property (nonatomic, strong) NSMutableArray *allCityNames;
 //record id of user's current city
 @property (strong, nonatomic) NSString* currentCityId;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *mapButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
 
 @end

@@ -215,7 +215,7 @@
     
     tempDict = [[NSMutableDictionary alloc] init];
     [tempDict setObject:@"4887442" forKey:@"id"];
-    [tempDict setObject:@"Chicago Heights" forKey:@"name"];
+    [tempDict setObject:@"Chicago" forKey:@"name"];
     [_allCityNames addObject:tempDict];
 
 }

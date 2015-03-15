@@ -228,6 +228,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self isNetworkAvailable];
+    
     CityTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CityCell" forIndexPath:indexPath];
     
     // night reading mode
@@ -638,7 +641,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     tempDict = [[NSMutableDictionary alloc] init];
     [tempDict setObject:@"4887442" forKey:@"id"];
-    [tempDict setObject:@"Chicago Heights" forKey:@"name"];
+    [tempDict setObject:@"Chicago" forKey:@"name"];
     [_allCityNames addObject:tempDict];
 }
 

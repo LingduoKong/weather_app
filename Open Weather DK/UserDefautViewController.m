@@ -28,6 +28,30 @@
     //        [self.vc.view addSubview:v];
     //    }
     
+    CGFloat width = self.vc.view.frame.size.width;
+    CGFloat height = self.vc.view.frame.size.height;
+    
+    UILabel *projectName = [[UILabel alloc]initWithFrame:CGRectMake(10, height/5, width-20, height/5)];
+    projectName.backgroundColor = [UIColor yellowColor];
+    projectName.font=[projectName.font fontWithSize:25];
+    projectName.text = @"Weawther DK";
+    
+    UILabel *author = [[UILabel alloc]initWithFrame:CGRectMake(10, height/2, width-20, height/6)];
+    author.backgroundColor = [UIColor yellowColor];
+    author.numberOfLines = 2;
+    author.text = @"Author:\nLingduo Kong & Jiaming Dong";
+    
+    projectName.clipsToBounds = YES;
+    author.clipsToBounds = YES;
+    projectName.layer.cornerRadius = 10;
+    author.layer.cornerRadius = 10;
+    
+    projectName.textAlignment = NSTextAlignmentCenter;
+    author.textAlignment = NSTextAlignmentCenter;
+    
+    [self.vc.view addSubview:projectName];
+    [self.vc.view addSubview:author];
+
     [self presentViewController:self.vc animated:NO completion:^{
         
         NSLog(@"Splash screen is showing");
@@ -74,7 +98,7 @@
         self.vc=nil;
         NSLog(@"dismiss splash view");
     }
-    [self.vc dismissViewControllerAnimated:YES completion:^{}];
+//    [self.vc dismissViewControllerAnimated:YES completion:^{}];
     
     [self addAllCities];
 }
@@ -139,7 +163,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                                      
                                                                      if (self.vc!=nil && indexPath.row == [self.AllCityIds count]-1) {
-                                                                         [self.vc dismissViewControllerAnimated:YES completion:^{}];
+                                                                         [self.vc dismissViewControllerAnimated:5.0 completion:^{}];
                                                                          self.vc=nil;
                                                                          NSLog(@"dismiss splash view");
                                                                      }

@@ -17,7 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     // add splash view
     self.vc = [[UIViewController alloc] init];
     self.vc.view.backgroundColor = [UIColor colorWithRed:135.0/255.0 green:206.0/255.0 blue:250.0/255.0 alpha:1];
@@ -101,8 +101,55 @@
 //    [self.vc dismissViewControllerAnimated:YES completion:^{}];
     
     [self addAllCities];
+    
+    // deal with settings
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userPreferenceDidChange) name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    // initial launch
+    NSString* firstLaunchDate = [defaults objectForKey:@"first_launch_date"];
+    NSDate* date = [NSDate date];
+    
+    if ([firstLaunchDate isEqualToString:@"Application Terminated"]) {
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.timeStyle = NSDateFormatterShortStyle;
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[dateFormatter stringFromDate:date] forKey:@"first_launch_date"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
+
+- (void) viewDidDisappear:(BOOL)animated {
+    // reset initial launch
+    NSString* firstLaunchDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"first_launch_date"];
+    
+    if (![firstLaunchDate isEqualToString:@"Application Terminated"]) {
+        
+        [[NSUserDefaults standardUserDefaults] setObject:@"Application Terminated" forKey:@"first_launch_date"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+// deal with changes of user preference in settings
+- (void)userPreferenceDidChange {
+    // night reading mode
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString* mode = [defaults objectForKey:@"reading_mode_preference"];
+    if ([mode integerValue]) {
+        // night mode
+        self.tableView.backgroundColor = [UIColor blackColor];
+    }
+    else {
+        // day mode
+        self.tableView.backgroundColor = [UIColor whiteColor];
+    }
+    
+    [self.tableView reloadData];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -113,7 +160,17 @@
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [cell setBackgroundColor:[UIColor colorWithRed:240.0/255.0 green:248.0/255.0 blue:255.0/255.0 alpha:1]];
+    // night reading mode
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString* mode = [defaults objectForKey:@"reading_mode_preference"];
+    if ([mode integerValue]) {
+        // night mode
+        [cell setBackgroundColor:[UIColor blackColor]];
+    }
+    else {
+        // day mode
+        [cell setBackgroundColor:[UIColor colorWithRed:240.0/255.0 green:248.0/255.0 blue:255.0/255.0 alpha:1]];
+    }
 }
 
 #pragma mark - Table view data source
@@ -129,6 +186,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CityTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CityCell" forIndexPath:indexPath];
+    
+    // night reading mode
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString* mode = [defaults objectForKey:@"reading_mode_preference"];
+    if ([mode integerValue]) {
+        // night mode
+        cell.cityName.textColor = [UIColor whiteColor];
+    }
+    else {
+        // day mode
+        cell.cityName.textColor = [UIColor blackColor];
+    }
     
 //    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", self.AllCityIds[indexPath.row]];
     

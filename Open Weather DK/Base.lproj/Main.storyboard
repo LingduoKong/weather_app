@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qTE-JE-hxv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qTE-JE-hxv">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
+        <!--Instructions-->
+        <scene sceneID="V3z-TN-0B9">
+            <objects>
+                <viewController title="Instructions" id="Mhw-oF-ue4" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Kfd-IR-Npm"/>
+                        <viewControllerLayoutGuide type="bottom" id="kiy-0Z-Hia"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PhQ-bt-DWd">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aka-sS-RCJ">
+                                <rect key="frame" x="16" y="64" width="568" height="536"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <mutableString key="text">Show current weather condition and sever-day forecasts. It can match your current location and time of the day for more convenience. Features: -It shows all details: winds, pressure, humidity and a brief description. -A plot of temperature for next week offers the trend of climate change. -An interactive map shows all cities chosen in the list. Clicking a bookmark and selecting one city can lead to the location of the city. If the icon of that city is clicked, a label including some info will appear. The label can also be clicked for more details.-Search in the city list to add cities you prefer.-Set notification to alert you daily weather at any time you want.-Track all cities you prefer.Help tips:-Scroll down for more details and a plot.-Scroll left and right in the middle to see weather of next week.-Tap plus sign to add cities.-Tap info sign to get using guides-Tap map to see cities in a map.-Tap setting sign to set a notification.
+</mutableString>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="Aka-sS-RCJ" secondAttribute="trailing" id="1cP-Ul-BBn"/>
+                            <constraint firstItem="Aka-sS-RCJ" firstAttribute="top" secondItem="Kfd-IR-Npm" secondAttribute="bottom" id="9Tq-Ci-Lvd"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="Aka-sS-RCJ" secondAttribute="bottom" id="H5E-4W-9fY"/>
+                            <constraint firstItem="Aka-sS-RCJ" firstAttribute="leading" secondItem="PhQ-bt-DWd" secondAttribute="leadingMargin" id="UA0-2U-adB"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mRv-sy-8xK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1574" y="-1655"/>
+        </scene>
         <!--City Management-->
         <scene sceneID="QQF-Ts-QMv">
             <objects>
@@ -106,7 +140,11 @@
                                 <segue destination="Gcc-Gy-bHh" kind="presentation" identifier="showSearchView" id="3o9-Oe-Qk8"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="about" id="BHZ-KR-9Rj"/>
+                        <barButtonItem key="rightBarButtonItem" image="about" id="BHZ-KR-9Rj">
+                            <connections>
+                                <segue destination="Mhw-oF-ue4" kind="show" identifier="showUserInfo" id="mFe-OH-tk9"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ef5-Ru-jGp" userLabel="First Responder" sceneMemberID="firstResponder"/>

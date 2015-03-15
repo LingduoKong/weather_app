@@ -18,6 +18,9 @@
 - (IBAction)unwindToList:(UIStoryboardSegue *)segue;
 
 @property (nonatomic, strong) NSMutableArray *AllCities;
+
+@property (nonatomic, strong) NSMutableArray *allCityNames;
+@property (nonatomic, strong) NSMutableArray *filteredCityNames;
 @property BOOL isFiltered;
 
 @property (strong, nonatomic) IBOutlet UISearchBar *CitySearchBar;

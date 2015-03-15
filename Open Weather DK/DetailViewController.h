@@ -31,6 +31,12 @@
 @property UILabel *cityName;
 @property UILabel *country;
 
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
+
+@property (strong, nonatomic) NSTimer *Timer;
+@property (strong, nonatomic) IBOutlet UILabel *timeDisplayer;
+@property (strong, nonatomic) NSTimeZone *timeZone;
+@property (strong, nonatomic) NSDateFormatter *dateFormatter;
 
 @property UIScrollView *scrollviewDaily;
 @property (strong, nonatomic) IBOutlet UIScrollView *BaseScrollView;

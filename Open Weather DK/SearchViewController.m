@@ -14,17 +14,14 @@
 
 @implementation SearchViewController
 
-- (void)downloadCities : (NSString*)searchText {
-    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/find?q=%@&type=like&mode=json", searchText];
+- (void)downloadCities{
+    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/1280737.json"];
     // deal with space
-    url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                              success:^(NSMutableDictionary *dictionary, NSError *error) {
                                                                  if ([_AllCities count] != 0) {
                                                                      [_AllCities removeAllObjects];
                                                                  }
-                                                                 
-                                                                 //_AllCities = dictionary[@"list"];
                                                                  
                                                                  for (NSMutableDictionary* cityDict in dictionary[@"list"]) {
                                                                      [_AllCities addObject:cityDict];
@@ -43,41 +40,19 @@
                                                                      //NSLog(@"Problem with Data");
                                                                  });
                                                              }];
-    // night reading mode
-    /*NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString* mode = [defaults objectForKey:@"reading_mode_preference"];
-    if ([mode integerValue]) {
-        // night mode
-        self.tableView.backgroundColor = [UIColor blackColor];
-        self.navigationController.navigationBar.backgroundColor = [UIColor blackColor];
-        self.refreshControl.tintColor = [UIColor whiteColor];
-    }
-    else {
-        // day mode
-        self.tableView.backgroundColor = [UIColor whiteColor];
-        self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
-        self.refreshControl.tintColor = [UIColor redColor];
-    }*/
-    
-    //if the call was done from UIRefreshControl, stop the spinner
-    //if (self.refreshControl.refreshing) {
-    //    [self.refreshControl endRefreshing];
-    //}
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    // Initial cities
-    //NSString *myFile = [[NSBundle mainBundle] pathForResource:@"citylist" ofType:@"json"];
-    //_AllCities = [[NSMutableArray alloc] initWithContentsOfFile:myFile];
-    //NSLog(@"%@", _AllCities);
+//    _allCityNames = [[NSMutableArray alloc] initWithObjects:@"London",@"New York", @"Berlin", @"Beijing", @"Sydney", nil];
+    [self addObejct];
     
-    //_AllCityNames = [[NSMutableArray alloc] initWithObjects:@"London",@"New York", @"Berlin", @"Beijing", @"Sydney", nil];
-    //[self downloadCities];
     
-    _AllCities= [[NSMutableArray alloc] init];
+//    _AllCities= [[NSMutableArray alloc] init];
+//    [self downloadCities];
+//    NSLog(@"%@", _AllCities);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -92,13 +67,22 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _AllCities.count;
+    if (_isFiltered) {
+        return [_filteredCityNames count];
+    }
+    else return [_allCityNames count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SearchResultCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ResultCell"];
-    cell.City.text = [[_AllCities objectAtIndex:indexPath.row] objectForKey:@"name"];
+    if (_isFiltered) {
+        cell.City.text = [[_filteredCityNames objectAtIndex:indexPath.row]objectForKey:@"name"];
 
+    }
+    else {
+        cell.City.text = [[_allCityNames objectAtIndex:indexPath.row]objectForKey:@"name"];
+
+    }
     return cell;
 }
 
@@ -111,7 +95,15 @@
     }
     else {
         _isFiltered = YES;
-        [self downloadCities:searchText];
+        _filteredCityNames = [[NSMutableArray alloc]init];
+        
+        for (NSDictionary *cityname in _allCityNames ) {
+            NSRange cityNameRange = [[cityname objectForKey:@"name"] rangeOfString: searchText options:NSCaseInsensitiveSearch];
+            
+            if (cityNameRange.location!=NSNotFound) {
+                [_filteredCityNames addObject:cityname];
+            }
+        }
     }
     
     // reload tableview
@@ -122,26 +114,20 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showSearchDetail"]) {
+        NSString *cityid;
         NSIndexPath *indexPath = [self.CityList indexPathForSelectedRow];
-        //NSDate *object = [self.AllCityNames objectAtIndex:indexPath.row];
-        NSString *cityid = [[self.AllCities objectAtIndex:indexPath.row] objectForKey:@"id"];
+        if (_isFiltered) {
+            cityid = [[self.filteredCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
+        }
+        else {
+            cityid = [[self.allCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
+        }
+//        NSDate *object = [self.AllCityNames objectAtIndex:indexPath.row];
         NSLog(@"City ID selected: %@", cityid);
-        
-//        UINavigationController *nvc = (UINavigationController*)segue.destinationViewController;
-//        DetailViewController *dvc = (DetailViewController*)nvc.topViewController;
-//        [dvc setDetailItem:cityid];
-//        dvc.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-//        dvc.navigationItem.leftItemsSupplementBackButton = YES;
-        
-//        UINavigationController *nvc = (UINavigationController*)segue.destinationViewController;
         
         DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
         [dvc setDetailItem:cityid];
-        
-        
-//        dvc.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-//        dvc.navigationItem.leftItemsSupplementBackButton = YES;
-    } 
+    }
 }
 
 
@@ -152,5 +138,108 @@
 
 - (IBAction)unwindToList:(UIStoryboardSegue *)segue{
     
+}
+
+-(void)addObejct{
+    NSMutableDictionary *tempDict;
+    _allCityNames = [[NSMutableArray alloc] init];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"1283240" forKey:@"id"];
+    [tempDict setObject:@"Kathmandu" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"3632308" forKey:@"id"];
+    [tempDict setObject:@"Merida" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"1280737" forKey:@"id"];
+    [tempDict setObject:@"Lhasa" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"745042" forKey:@"id"];
+    [tempDict setObject:@"İstanbul" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"3496831" forKey:@"id"];
+    [tempDict setObject:@"Mao" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"523523" forKey:@"id"];
+    [tempDict setObject:@"Nalchik" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"2267057" forKey:@"id"];
+    [tempDict setObject:@"Lisbon" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"3082707" forKey:@"id"];
+    [tempDict setObject:@"Walbrzych" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"3091150" forKey:@"id"];
+    [tempDict setObject:@"Naklo nad Notecia" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"1784658" forKey:@"id"];
+    [tempDict setObject:@"Zhengzhou" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"2643743" forKey:@"id"];
+    [tempDict setObject:@"London" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"993800" forKey:@"id"];
+    [tempDict setObject:@"Johannesburg" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"524901" forKey:@"id"];
+    [tempDict setObject:@"Moscow" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"1850147" forKey:@"id"];
+    [tempDict setObject:@"Tokyo" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"2147714" forKey:@"id"];
+    [tempDict setObject:@"Sydney" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+    
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"1819729" forKey:@"id"];
+    [tempDict setObject:@"Hong Kong" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"5856195" forKey:@"id"];
+    [tempDict setObject:@"Honolulu" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"5391959" forKey:@"id"];
+    [tempDict setObject:@"San Francisco" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"3530597" forKey:@"id"];
+    [tempDict setObject:@"Mexico City" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"5128638" forKey:@"id"];
+    [tempDict setObject:@"New York" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+
+    tempDict = [[NSMutableDictionary alloc] init];
+    [tempDict setObject:@"3451190" forKey:@"id"];
+    [tempDict setObject:@"Rio de Janeiro" forKey:@"name"];
+    [_allCityNames addObject:tempDict];
+
+
 }
 @end

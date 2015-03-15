@@ -11,8 +11,11 @@
 #import "SharedNetworking.h"
 #import "CityTableViewCell.h"
 #import "SearchViewController.h"
+#import "settingsViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "NSString+KtoC.h"
+
+#import "mapViewController.h"
 
 @interface UserDefautViewController : UITableViewController<UpdateUserDefaultViewDelegate, CLLocationManagerDelegate>
 
@@ -24,8 +27,12 @@
 
 @property (strong, nonatomic) NSMutableArray *AllCityIds;
 
+@property (strong, nonatomic) NSMutableArray *AllCityInfo;
+
 @property (nonatomic, retain)CLLocationManager* locationManager;
 
+//store all cities
+@property (nonatomic, strong) NSMutableArray *allCityNames;
 //record id of user's current city
 @property (strong, nonatomic) NSString* currentCityId;
 

@@ -1,10 +1,15 @@
-//
-//  DetailViewController.m
-//  Open Weather D.K.
-//
-//  Created by dongjiaming on 15/2/27.
-//  Copyright (c) 2015年 The University of Chicago, Department of Computer Science. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           DetailViewController
+ * @abstract             A custom viewcontroller to show the detail of a chosen city
+ * @description          Shows details of a certain city, basically daily weather but also including local time of that city, country it belongs to and things like that. It can deal with the save button. It might be segued from userDefaultViewController or SearchViewController.
+ ********************************************************************************************/
 
 #import "DetailViewController.h"
 #import "UUChart.h"
@@ -21,6 +26,12 @@
 
 #pragma mark - Managing the detail item
 
+/********************************************************************************************
+ * @method           setDetailItem
+ * @abstract         Pass the city id to this detailviewcontroller from other viewcontroller
+ * @description      Called when the user segue in this viewcontroller so it gets the city id from outside and assign it to self.detailItem.
+ ********************************************************************************************/
+
 - (void)setDetailItem:(NSString*)newDetailItem {
     if (_detailItem != newDetailItem) {
         _detailItem = newDetailItem;
@@ -30,15 +41,24 @@
     }
 }
 
+/********************************************************************************************
+ * @method           setDetailItem
+ * @abstract         download the data
+ * @description      Download the details including the 7 days' weather and others by city id and store it in self.data.
+ ********************************************************************************************/
+
 - (void)downloadByCityID {
 //    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?id=%@&mode=json", self.detailItem];
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/%@.json", self.detailItem];
+    NSLog(@"[DetailViewController] get details of city id %@ from url: %@", self.detailItem, url);
+    
     [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                              success:^(NSMutableDictionary *dictionary, NSError *error) {
                                                                  // Use dispatch_async to update the table on the main thread
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                                      _data = dictionary;
-                                                                     NSLog(@"%@", _data);
+                                                                     
+                                                                     NSLog(@"[DetailViewController] data of city with id %@: %@", self.detailItem, dictionary);
                                                                      
                                                                      [self configureDailyScrollView:_data];
                                                                      [self configureBaseScrollView:_data];
@@ -46,10 +66,16 @@
                                                              }
                                                              failure:^{
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     NSLog(@"Problem with Data");
+                                                                     NSLog(@"[DetailViewController] Problem with Data");
                                                                  });
                                                              }];
 }
+
+/********************************************************************************************
+ * @method           configureView
+ * @abstract         configure the whole view of DetailViewController.
+ * @description      configure the whole view of DetailViewController, including download the data, configure the scroll view contained and adjust save button accordingly.
+ ********************************************************************************************/
 
 - (void)configureView {
     // Update the user interface for the detail item.
@@ -77,6 +103,12 @@
 
 #pragma mark base scrollview
 
+/********************************************************************************************
+ * @method           configureScrollView
+ * @abstract         configure the scroll view of DetailViewController.
+ * @description      preprocess for the configuration of base scroll view and daily scroll view.
+ ********************************************************************************************/
+
 -(void)configureScrollView {
     
     // init elements
@@ -100,6 +132,12 @@
 }
 
 #pragma mark configure daily scrollview
+
+/********************************************************************************************
+ * @method           configureDailyScrollView
+ * @abstract         configure the daily scroll view of DetailViewController.
+ * @description      configure the daily scroll view with the data downloaded to display each day's weather in each of its subviews. (7 days totally)
+ ********************************************************************************************/
 
 -(void)configureDailyScrollView :(NSMutableDictionary*) data{
     
@@ -146,6 +184,12 @@
 }
 
 #pragma mark configure base scroll
+
+/********************************************************************************************
+ * @method           configureBaseScrollView
+ * @abstract         configure the base scroll view of DetailViewController.
+ * @description      configure the base scroll view with the data downloaded to display the basic information of this city and the current weather of it.
+ ********************************************************************************************/
 
 -(void)configureBaseScrollView: (NSMutableDictionary*) data{
     NSDictionary *city = [data objectForKey:@"city"];
@@ -200,10 +244,14 @@
     [self.BaseScrollView addSubview:pressure];
     [self.BaseScrollView addSubview:wind_speed];
     [self plot];
-    
 }
 
 #pragma mark plot
+
+/********************************************************************************************
+ * Followings are implementations of functions in UUChartDataSource delegate, which is used to
+ * draw the Broken Line Graph of 7 days' weather of the city.
+ ********************************************************************************************/
 
 -(void)plot{
     
@@ -213,13 +261,13 @@
     [chartView showInView:self.BaseScrollView];
 }
 
-#pragma mark - @required
-//横坐标标题数组
+// x value array
 - (NSArray *)UUChart_xLableArray:(UUChart *)chart
 {
     return [NSArray arrayWithArray:self.date_chart];
 }
-//数值多重数组
+
+// y value array
 - (NSArray *)UUChart_yValueArray:(UUChart *)chart
 {
     NSArray *aryH = [NSArray arrayWithArray:self.high_temp_array];
@@ -228,13 +276,13 @@
     return @[aryH,aryL];
 }
 
-#pragma mark - @optional
-//颜色数组
+// color of broken line
 - (NSArray *)UUChart_ColorArray:(UUChart *)chart
 {
     return @[UURed,UUBlue];
 }
-//显示数值范围
+
+// configure range
 - (CGRange)UUChartChooseRangeInLineChart:(UUChart *)chart
 {
     NSInteger min = 100;
@@ -252,9 +300,7 @@
     return CGRangeMake(max+1, min-1);
 }
 
-#pragma mark 折线图专享功能
-
-//判断显示横线条
+// configure horizon line index
 - (BOOL)UUChart:(UUChart *)chart ShowHorizonLineAtIndex:(NSInteger)index
 {
     return YES;
@@ -264,7 +310,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSLog(@"city id: %@", self.detailItem);
+    NSLog(@"[DetailViewController] current city id: %@", self.detailItem);
     // Do any additional setup after loading the view, typically from a nib.
     self.width = self.view.frame.size.width;
     self.height =self.view.frame.size.height;
@@ -279,6 +325,12 @@
     [_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 }
 
+/********************************************************************************************
+ * @method           updateTime
+ * @abstract         update local time
+ * @description      called by the Timer to update local time of the city.
+ ********************************************************************************************/
+
 - (void)updateTime {
     NSDate *date = [NSDate date];
     NSInteger interval = [_timeZone secondsFromGMTForDate: date];
@@ -292,9 +344,15 @@
     // Dispose of any resources that can be recreated.
 }
 
+/********************************************************************************************
+ * @method           saveOrUnsave
+ * @abstract         action of save button
+ * @description      if the user presses save, add the city into user defaults, or if the user presses unsave, remove the city from user defaults. Then call the delegate function update to update UserDefaultViewController.
+ ********************************************************************************************/
+
 - (IBAction)saveOrUnsave:(id)sender {
     if (self.detailItem) {
-        NSLog(@"save or unsave");
+        NSLog(@"[DetailViewController] press save/unsave button.");
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSArray *cityIdArray = (NSArray*)[defaults objectForKey:@"userCities"];
         NSMutableArray *newArr = nil;
@@ -319,8 +377,6 @@
         [defaults setObject:newArr forKey:@"userCities"];
         
         [defaults synchronize];
-        
-        NSLog(@"%@", _data);
     }
     // update UserDefaultViewController
     [self.delegate update];

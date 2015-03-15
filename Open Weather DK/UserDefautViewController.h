@@ -1,10 +1,15 @@
-//
-//  UserDefautViewController.h
-//  Open Weather DK
-//
-//  Created by Lingduo Kong on 3/1/15.
-//  Copyright (c) 2015 Lingduo Kong. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           UserDefautViewController
+ * @abstract             A custom tableviewcontroller
+ * @description          Shows abstract of all the cities' weather in user defaults added by        the user's save operation.
+ ********************************************************************************************/
 
 #import <UIKit/UIKit.h>
 #import "DetailViewController.h"

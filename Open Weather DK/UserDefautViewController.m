@@ -1,10 +1,15 @@
-//
-//  UserDefautViewController.m
-//  Open Weather DK
-//
-//  Created by Lingduo Kong on 3/1/15.
-//  Copyright (c) 2015 Lingduo Kong. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           UserDefautViewController
+ * @abstract             A custom tableviewcontroller
+ * @description          Shows abstract of all the cities' weather in user defaults added by        the user's save operation.
+ ********************************************************************************************/
 
 #import "UserDefautViewController.h"
 
@@ -21,12 +26,6 @@
     // add splash view
     self.vc = [[UIViewController alloc] init];
     self.vc.view.backgroundColor = [UIColor colorWithRed:135.0/255.0 green:206.0/255.0 blue:250.0/255.0 alpha:1];
-    
-    //    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-    //        UIImageView *v = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Chicago.jpg"]];
-    //        NSLog(@"The Launch Image: %@",v);
-    //        [self.vc.view addSubview:v];
-    //    }
     
     CGFloat width = self.vc.view.frame.size.width;
     CGFloat height = self.vc.view.frame.size.height;
@@ -82,7 +81,7 @@
     cityIdArray = (NSArray*)[defaults objectForKey:@"userCities"];
     
     self.AllCityIds = [[NSMutableArray alloc] initWithArray:cityIdArray];
-    NSLog(@"AllCityIds: %@", self.AllCityIds);
+    NSLog(@"[UserDefaultViewController] AllCityIds(got from user defaults): %@", self.AllCityIds);
     
 
     // refresh date
@@ -96,7 +95,7 @@
     if([self.AllCityIds count]==0){
         [self.vc dismissViewControllerAnimated:YES completion:^{}];
         self.vc=nil;
-        NSLog(@"dismiss splash view");
+        NSLog(@"[UserDefaultViewController] dismiss splash view");
     }
 //    [self.vc dismissViewControllerAnimated:YES completion:^{}];
     
@@ -121,6 +120,22 @@
     }
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    // initial launch
+    NSString* firstLaunchDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"first_launch_date"];
+    NSDate* date = [NSDate date];
+    
+    if ([firstLaunchDate isEqualToString:@"Application Terminated"]) {
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.timeStyle = NSDateFormatterShortStyle;
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[dateFormatter stringFromDate:date] forKey:@"first_launch_date"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
 
 - (void) viewDidDisappear:(BOOL)animated {
     // reset initial launch
@@ -134,7 +149,12 @@
     }
 }
 
-// deal with changes of user preference in settings
+/********************************************************************************************
+ * @method           userPreferenceDidChange
+ * @abstract         Night Mode Server Function
+ * @description      Adjust the tableview's background according to the user preference in settings. Called when settings are changed.
+ ********************************************************************************************/
+
 - (void)userPreferenceDidChange {
     // night reading mode
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -202,12 +222,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 //    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", self.AllCityIds[indexPath.row]];
     
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", self.AllCityIds[indexPath.row]];
+    NSLog(@"[UserDefaultViewController] get city with id %@ from url: %@", self.AllCityIds[indexPath.row], url);
     
     // retrieve the needed data by id
     [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                              success:^(NSMutableDictionary *dictionary, NSError *error) {
                                                                  
-                                                                 NSLog(@"%@", dictionary);
+                                                                 NSLog(@"[UserDefaultViewController] data of city with id %@: %@", self.AllCityIds[indexPath.row], dictionary);
+                                                                 
                                                                  // set map sign
                                                                  if ([self.AllCityIds[indexPath.row] isEqual:self.currentCityId]) {
                                                                      cell.mapSign.hidden = NO;
@@ -234,7 +256,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                                      if (self.vc!=nil && indexPath.row == [self.AllCityIds count]-1) {
                                                                          [self.vc dismissViewControllerAnimated:5.0 completion:^{}];
                                                                          self.vc=nil;
-                                                                         NSLog(@"dismiss splash view");
+                                                                         NSLog(@"[UserDefaultViewController] dismiss splash view");
                                                                      }
                                                                  });
                                                              }
@@ -242,7 +264,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                                      NSLog(@"Problem with Data");
                                                                      if (self.vc!=nil) {
-                                                                         NSLog(@"Splash view will keep");
+                                                                         NSLog(@"[UserDefaultViewController] Splash view will keep");
                                                                      }
                                                                  });
                                                              }];
@@ -264,8 +286,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [defaults setObject:self.AllCityIds forKey:@"userCities"];
         [defaults synchronize];
         
-        NSLog(@"AllCityIds: %@", self.AllCityIds);
-        
         // remove from table
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
@@ -281,8 +301,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         
         NSString *cityid = [self.AllCityIds objectAtIndex:indexPath.row];
-        NSLog(@"City ID selected: %@", cityid);
-               
+        NSLog(@"[UserDefaultViewController] City ID selected(press cell): %@", cityid);
+        
         DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
         [dvc setDetailItem:cityid];
         
@@ -292,6 +312,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     else if ([[segue identifier] isEqualToString:@"showSearchView"]) {
         SearchViewController *svc = (SearchViewController*)segue.destinationViewController;
         svc.delegate = self;
+        
+        NSLog(@"[UserDefaultViewController] Segue to SearchViewController");
     }
     
     // to the map view controller
@@ -302,6 +324,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [mvc pass:self.AllCityIds];
         }
         [mvc setDelegate:self];
+        
+        NSLog(@"[UserDefaultViewController] Segue to mapViewController");
     }
 }
 
@@ -313,6 +337,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 ///-----------------------------------------------------------------------------
 #pragma mark - Custom Delegate Methods
 ///-----------------------------------------------------------------------------
+
+/********************************************************************************************
+ * @method           update
+ * @abstract         Delegate Function called by other viewcontroller
+ * @description      When the user save or unsave a city in the detail view controller, this fucntion will be called using delegate to update the tableview in this class accordingly.
+ ********************************************************************************************/
 
 - (void) update {
     
@@ -330,7 +360,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     cityIdArray = (NSArray*)[defaults objectForKey:@"userCities"];
     
     self.AllCityIds = [[NSMutableArray alloc] initWithArray:cityIdArray];
-    NSLog(@"update called");
+    NSLog(@"[UserDefaultViewController] update called");
     
     // update the tableview
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -345,8 +375,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 ///-----------------------------------------------------------------------------
 #pragma mark - Location Manager Delegate Methods
 ///-----------------------------------------------------------------------------
+
+/********************************************************************************************
+ * @method           didUpdateLocations
+ * @abstract         called when current location is changed
+ * @description      It is used to update the current city of the user.
+ ********************************************************************************************/
+
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    NSLog(@"didUpdateLocations called");
+    NSLog(@"[UserDefaultViewController] didUpdateLocations called");
     [self.locationManager startUpdatingLocation];
     // get current location
     CLLocation *cloc = [locations lastObject];
@@ -359,7 +396,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                 CLPlacemark *placemark = [placemarks objectAtIndex:0];
                 NSDictionary *test = [placemark addressDictionary];
                 
-                NSLog(@"cityName: %@, countryCode: %@", [test[@"City"] description], [test[@"CountryCode"] description]);
+                NSLog(@"[UserDefaultViewController] cityName: %@, countryCode: %@", [test[@"City"] description], [test[@"CountryCode"] description]);
                 
                 NSString* currentCityName = [test[@"City"] description];
                 //NSString* currentCountryCode = [test[@"CountryCode"] description];
@@ -398,11 +435,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             }
             else if (error == nil && [placemarks count] == 0)
             {
-                NSLog(@"No results were returned.");
+                NSLog(@"[UserDefaultViewController] No results were returned.");
             }
             else if (error != nil)
             {
-                NSLog(@"An error occurred = %@", error);
+                NSLog(@"[UserDefaultViewController] An error occurred = %@", error);
             }
         }
     }];
@@ -410,15 +447,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [_locationManager stopUpdatingLocation];
 }
 
-/**
- * call it if failure happens
- */
+/********************************************************************************************
+ * @method           didFailWithError
+ * @abstract         called if failure happens
+ * @description      This function will tell which kind of error happens when the application tries to update the current location of the user.
+ ********************************************************************************************/
+
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
     if ([error code]==kCLErrorDenied) {
-        NSLog(@"Access being denied");
+        NSLog(@"[UserDefaultViewController] Access being denied");
     }
     if ([error code]==kCLErrorLocationUnknown) {
-        NSLog(@"Unavailable to access");
+        NSLog(@"[UserDefaultViewController] Unavailable to access");
     }
 }
 
@@ -464,9 +504,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                               otherButtonTitles:nil];
         [alert show];
     } else {
-        NSLog(@"Wrong location status");
+        NSLog(@"[UserDefaultViewController] Wrong location status");
     }
 }
+
+/********************************************************************************************
+ * @method           addAllCities
+ * @abstract         a helper function to load ALL the cities whose data is available to access
+ * @description      Sence we are using fake data, the number of cities that are supported is 
+ *                   limited. So we need to add all of them when the program is launched.
+ ********************************************************************************************/
 
 -(void)addAllCities{
     NSMutableDictionary *tempDict;

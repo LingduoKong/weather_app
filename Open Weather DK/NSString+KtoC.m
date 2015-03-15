@@ -1,14 +1,13 @@
-//
-//  NSString+KtoC.m
-//  Open Weather DK
-//
-//  Created by Lingduo Kong on 3/6/15.
-//  Copyright (c) 2015 Lingduo Kong. All rights reserved.
-//
-
 #import "NSString+KtoC.h"
 
 @implementation NSString (KtoC)
+
+/********************************************************************************************
+ * @method           KtoC
+ * @abstract         converter function
+ * @description      convert the temperature from Kelvin to degree centigrade.
+ ********************************************************************************************/
+
 - (NSString*) KtoC {
     float fK = [self floatValue];
     fK -= 273.15;

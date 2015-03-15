@@ -1,10 +1,8 @@
-//
-//  WeatherAnnotation.h
-//  Open Weather DK
-//
-//  Created by dongjiaming on 15/3/6.
-//  Copyright (c) 2015年 Lingduo Kong. All rights reserved.
-//
+/********************************************************************************************
+ * @class_name           WeatherAnnotation
+ * @abstract             A custom annotation to show city name, weather type and min/max temerature
+ * @description          A custom annotation to show city name, weather type and min/max temerature
+ ********************************************************************************************/
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>

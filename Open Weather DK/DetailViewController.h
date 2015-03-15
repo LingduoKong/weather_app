@@ -1,10 +1,15 @@
-//
-//  DetailViewController.h
-//  Open Weather D.K.
-//
-//  Created by dongjiaming on 15/2/27.
-//  Copyright (c) 2015年 The University of Chicago, Department of Computer Science. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           DetailViewController
+ * @abstract             A custom viewcontroller to show the detail of a chosen city
+ * @description          Shows details of a certain city, basically daily weather but also including local time of that city, country it belongs to and things like that. It can deal with the save button. It might be segued from userDefaultViewController or SearchViewController.
+ ********************************************************************************************/
 
 #import <UIKit/UIKit.h>
 #import "SharedNetworking.h"

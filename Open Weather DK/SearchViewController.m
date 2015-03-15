@@ -14,45 +14,11 @@
 
 @implementation SearchViewController
 
-- (void)downloadCities{
-    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/1280737.json"];
-    // deal with space
-    [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
-                                                             success:^(NSMutableDictionary *dictionary, NSError *error) {
-                                                                 if ([_AllCities count] != 0) {
-                                                                     [_AllCities removeAllObjects];
-                                                                 }
-                                                                 
-                                                                 for (NSMutableDictionary* cityDict in dictionary[@"list"]) {
-                                                                     [_AllCities addObject:cityDict];
-                                                                 }
-                                                                 
-                                                                 //NSLog(@"_AllCities: %@", _AllCities);
-                                                                 // Use dispatch_async to update the table on the main thread
-                                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     [_CityList reloadData];
-                                                                     //splash disappear
-                                                                     //[self.delegate dismissSplashView:self sendObject:true];
-                                                                 });
-                                                             }
-                                                             failure:^{
-                                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     //NSLog(@"Problem with Data");
-                                                                 });
-                                                             }];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-//    _allCityNames = [[NSMutableArray alloc] initWithObjects:@"London",@"New York", @"Berlin", @"Beijing", @"Sydney", nil];
-    [self addObejct];
-    
-    
-//    _AllCities= [[NSMutableArray alloc] init];
-//    [self downloadCities];
-//    NSLog(@"%@", _AllCities);
+
+    [self addAllCities];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -122,11 +88,11 @@
         else {
             cityid = [[self.allCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
         }
-//        NSDate *object = [self.AllCityNames objectAtIndex:indexPath.row];
-        NSLog(@"City ID selected: %@", cityid);
         
         DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
         [dvc setDetailItem:cityid];
+        
+         NSLog(@"[SearchViewController] Segue to DetailViewController passing id %@", cityid);
     }
 }
 
@@ -140,7 +106,14 @@
     
 }
 
--(void)addObejct{
+/********************************************************************************************
+ * @method           addAllCities
+ * @abstract         a helper function to load ALL the cities whose data is available to access
+ * @description      Sence we are using fake data, the number of cities that are supported is
+ *                   limited. So we need to add all of them when the program is launched.
+ ********************************************************************************************/
+
+-(void)addAllCities {
     NSMutableDictionary *tempDict;
     _allCityNames = [[NSMutableArray alloc] init];
     
@@ -239,7 +212,6 @@
     [tempDict setObject:@"3451190" forKey:@"id"];
     [tempDict setObject:@"Rio de Janeiro" forKey:@"name"];
     [_allCityNames addObject:tempDict];
-
 
 }
 @end

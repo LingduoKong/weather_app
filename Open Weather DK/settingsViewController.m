@@ -1,10 +1,15 @@
-//
-//  settingsViewController.m
-//  Open Weather DK
-//
-//  Created by dongjiaming on 15/3/8.
-//  Copyright (c) 2015年 Lingduo Kong. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           settingsViewController
+ * @abstract             A custom viewcontroller for setting notifications.
+ * @description          In this viewcontroller you can choose a city of which the weather you wanna be notified and when you wanna be notified. A date picker and a picker view are included.
+ ********************************************************************************************/
 
 #import "settingsViewController.h"
 #import "NSString+KtoC.h"
@@ -70,7 +75,15 @@ NSDate *dateTime;
     dateTime = sender.date;
 }
 
+/********************************************************************************************
+ * @method           setNotification
+ * @abstract         action of setNotification button
+ * @description      schedule a UILocalNotification notifying the weather of the city at the time set.
+ ********************************************************************************************/
+
 - (IBAction)setNotification:(UIButton *)sender {
+     NSLog(@"[settingsViewController] setNotification button pressed.");
+    
      UIUserNotificationSettings *grantedSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
     
      // check if the notification is granted
@@ -111,6 +124,8 @@ NSDate *dateTime;
     NSInteger row = [self.cityPicker selectedRowInComponent:0];
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", [cityArray objectAtIndex:row]];
     
+    NSLog(@"[settingsViewController] get the name of city %@ from url: %@", [cityArray objectAtIndex:row], url);
+    
     NSData *jsonData = [NSData dataWithContentsOfURL:
                         [NSURL URLWithString: url]];
     
@@ -136,7 +151,7 @@ NSDate *dateTime;
     localNotification.userInfo = infoDic;
     // trigger the notification at the scheduled date
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    NSLog(@"Local Notification set in UserDefaulViewController: %@", localNotification);
+    NSLog(@"[settingsViewController] Local Notification set in UserDefaulViewController: %@", localNotification);
     
     NSString *notificationMessage = [NSString stringWithFormat:@"You will receive a notification telling you the weather in %@ at %@", jsonObject[@"city"][@"name"], dateTime];
     UIAlertView *successAlert = [[UIAlertView alloc]initWithTitle:@"Set Notification Successfully!" message:notificationMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];

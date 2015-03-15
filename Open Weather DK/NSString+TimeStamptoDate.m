@@ -9,6 +9,13 @@
 #import "NSString+TimeStamptoDate.h"
 
 @implementation NSString (TimeStamptoDate)
+
+/********************************************************************************************
+ * @method           KtoC
+ * @abstract         converter function
+ * @description      convert the UNIX time stamp to normal date
+ ********************************************************************************************/
+
 -(NSString*)TimeStamptoDate{
     double unixTimeStamp =[self doubleValue];
     NSTimeInterval _interval=unixTimeStamp;

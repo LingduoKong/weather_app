@@ -248,8 +248,8 @@
 		41C5883C1AAABB6000E21604 /* Elements */ = {
 			isa = PBXGroup;
 			children = (
-				A406DBD81AABA6CB004047EE /* WeatherAnnotation.m */,
 				A406DBD71AABA6AC004047EE /* WeatherAnnotation.h */,
+				A406DBD81AABA6CB004047EE /* WeatherAnnotation.m */,
 				41B5FF891AA3F0F6007DFF3F /* CityTableViewCell.h */,
 				41B5FF8A1AA3F0F6007DFF3F /* CityTableViewCell.m */,
 				41B5FF8B1AA3F0F6007DFF3F /* SearchResultCell.h */,

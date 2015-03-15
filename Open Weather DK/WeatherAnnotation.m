@@ -1,10 +1,8 @@
-//
-//  WeatherAnnotation.m
-//  Open Weather DK
-//
-//  Created by dongjiaming on 15/3/6.
-//  Copyright (c) 2015年 Lingduo Kong. All rights reserved.
-//
+/********************************************************************************************
+ * @class_name           WeatherAnnotation
+ * @abstract             A custom annotation to show city name, weather type and min/max temerature
+ * @description          A custom annotation to show city name, weather type and min/max temerature
+ ********************************************************************************************/
 
 #import "WeatherAnnotation.h"
 
@@ -12,6 +10,12 @@
 @synthesize coordinate = _coordinate;
 @synthesize cityName = _cityName;
 @synthesize temperature = _temperature;
+
+/********************************************************************************************
+ * @method           initWithCityName
+ * @abstract         initial the annotation with city name, weather type, 2D coordinates and city id.
+ * @description      initial the annotation with city name, weather type, 2D coordinates and city id.
+ ********************************************************************************************/
 
 - (id)initWithCityName:(NSString*)cityName temperature:(NSString*)temperature coordinate:(CLLocationCoordinate2D)coordinate cityId:(NSString*)cityId{
     if (self = [super init]) {

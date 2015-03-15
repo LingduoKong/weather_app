@@ -1,10 +1,20 @@
-//
-//  mapViewController.m
-//  Open Weather DK
-//
-//  Created by dongjiaming on 15/3/6.
-//  Copyright (c) 2015年 Lingduo Kong. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           mapViewController
+ * @abstract             A custom viewcontroller to show the mapview
+ * @description          The main part of this view controller is map view which have annotations
+ of all the users' cities, including city name, weather type and min/max temperature. User can
+ segue into DetailViewController through an annotation on the map. In order to facilitate the
+ search on the map, user can popover the book mark on the bottom left which display a list of
+ all the users' cities. Once the user chooses one city in the list, the map camera will focus on the
+ annotation of the city on the map view.
+ ********************************************************************************************/
 
 @import CoreLocation;
 #import "mapViewController.h"
@@ -19,9 +29,12 @@
 
 # define METERS_PER_MILE 1609.344
 
-///---------------------------------------------------------------------------------------------
-#pragma mark -- pass the array of city ids from UserDefaultViewController to self.AllCityIds
-///---------------------------------------------------------------------------------------------
+/********************************************************************************************
+* @method           cityIdsFromUDVC
+* @abstract         a helper function to pass the city ids.
+* @description      pass the array of city ids from UserDefaultViewController to self.AllCityIds.
+********************************************************************************************/
+
 - (void)pass:(NSMutableArray*)cityIdsFromUDVC {
     if (!self.AllCityIds) {
         self.AllCityIds = [[NSMutableArray alloc] initWithArray:cityIdsFromUDVC];
@@ -31,16 +44,23 @@
     }
 }
 
+/********************************************************************************************
+ * @method           configureView
+ * @abstract         configure the view
+ * @description      download the needed data of each city by its id and create a custom annotation for it.
+ ********************************************************************************************/
+
 - (void)configureView {
     if (!self.AllCityIds) {
         return;
     }
     for (NSString* cityId in self.AllCityIds) {
         NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json",cityId];
+        NSLog(@"[mapViewController] get data of city %@ from url: %@", cityId, url);
         
         [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                                  success:^(NSMutableDictionary *dictionary, NSError *error) {
-                                                                     NSLog(@"dictionary: %@", dictionary);
+                                                                     NSLog(@"[mapViewController] data of city %@: %@", cityId, dictionary);
                                                                      
                                                                      NSDictionary* coords = [[dictionary objectForKey:@"city"]objectForKey:@"coord"];
                                                                      CLLocationCoordinate2D centerCoord;
@@ -68,7 +88,7 @@
                                                                  }
                                                                  failure:^{
                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         NSLog(@"Problem with Data");
+                                                                         NSLog(@"[mapViewController] Problem with Data");
                                                                      });
                                                                  }];
     }
@@ -119,7 +139,6 @@
     static NSString *identifier = @"WeatherAnnotation";
     
     if ([annotation isKindOfClass:[WeatherAnnotation class]]) {
-        NSLog(@"WeatherAnnotation");
         
         WeatherAnnotation *location = (WeatherAnnotation *) annotation;
         MKAnnotationView *annotationView = (MKAnnotationView *) [theMapView dequeueReusableAnnotationViewWithIdentifier:identifier];
@@ -143,8 +162,12 @@
             return annotationView;
         }
         NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", location.cityId];
+        
+        NSLog(@"[mapViewController] get data of city %@ from url: %@", location.cityId, url);
+        
         [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                                  success:^(NSMutableDictionary *dictionary, NSError *error) {
+                                                                     NSLog(@"[mapViewController] data of city %@: %@", location.cityId, dictionary);
                                                                      
                                                                      NSString *imageName = [NSString stringWithFormat:@"%@.png",[[dictionary[@"weather"] objectAtIndex:0] objectForKey:@"icon"]];
                                                                      
@@ -153,14 +176,12 @@
                                                                      annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage: [UIImage imageNamed:imageName]];
                                                                      // Use dispatch_async to update the table on the main thread
                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         
-                                                                         NSLog(@"%@", dictionary);
                                                                      
                                                                      });
                                                                  }
                                                                  failure:^{
                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         NSLog(@"Problem with Data");
+                                                                         NSLog(@"[mapViewController] Problem with Data");
                                                                      });
                                                                  }];
         return annotationView;
@@ -212,6 +233,7 @@
         UIPopoverPresentationController *popPC = bvc.popoverPresentationController;
         popPC.delegate = self;
         
+        NSLog(@"[mapViewController] Segue to BookMarkTableViewController");
     }
 }
 
@@ -221,13 +243,23 @@
 
 # pragma Bookmark View Delegate Function
 
+/********************************************************************************************
+ * @method           handleCityIdFromBookMark
+ * @abstract         called by the delegate of the BookMarkViewController
+ * @description      set the camera according to the city id passed from the bookmark. Finally
+ the annotation of this city presents in the center of the screen so user can check and access
+ its weather details.
+ ********************************************************************************************/
+
 -(void)handleCityIdFromBookMark:(NSString *)cityId {
     if (!cityId) {
         return;
     }
-    NSLog(@"city id from Bookmark: %@", cityId);
-    
+    NSLog(@"[mapViewController] city id from Bookmark: %@", cityId);
+   
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", cityId];
+    
+    NSLog(@"[mapViewController] get data of city %@ from url: %@", cityId, url);
     
     NSData *jsonData = [NSData dataWithContentsOfURL:
                         [NSURL URLWithString: url]];
@@ -236,6 +268,8 @@
                               JSONObjectWithData:jsonData
                               options:NSJSONReadingMutableLeaves
                               error:nil];
+    
+    NSLog(@"[mapViewController] data of city %@: %@", cityId, jsonObject);
     
     NSDictionary *coords = [[jsonObject objectForKey:@"city"]objectForKey:@"coord"];
 

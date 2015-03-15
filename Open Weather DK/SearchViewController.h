@@ -1,10 +1,16 @@
-//
-//  SearchViewController.h
-//  Open Weather D.K.
-//
-//  Created by Lingduo Kong on 2/27/15.
-//  Copyright (c) 2015 The University of Chicago, Department of Computer Science. All rights reserved.
-//
+/********************************************************************************************
+ *                                   Special Explanation
+ *    Recently an accident happens with the weather API we've been using because of unknown
+ *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
+ *    and hope you could understand. All Data showed is unreliable.
+ ********************************************************************************************/
+
+/********************************************************************************************
+ * @class_name           SearchViewcontroller
+ * @abstract             A custom tableviewcontroller with a search bar.
+ * @description          In this viewcontroller you can input the city you want in the search bar 
+ and the table view will return the result(s). Currently we only support 22 cities sence the API sucks.
+ ********************************************************************************************/
 
 #import <UIKit/UIKit.h>
 #import "SharedNetworking.h"

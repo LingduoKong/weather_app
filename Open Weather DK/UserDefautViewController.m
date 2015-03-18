@@ -41,9 +41,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-//    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
+        
     // add splash view
     self.vc = [[UIViewController alloc] init];
     self.vc.view.backgroundColor = [UIColor colorWithRed:135.0/255.0 green:206.0/255.0 blue:250.0/255.0 alpha:1];

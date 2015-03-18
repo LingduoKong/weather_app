@@ -60,6 +60,8 @@
                                                                      
                                                                      NSLog(@"[DetailViewController] data of city with id %@: %@", self.detailItem, dictionary);
                                                                      
+                                                                     
+                                                                     
                                                                      [self configureDailyScrollView:_data];
                                                                      [self configureBaseScrollView:_data];
                                                                  });
@@ -152,18 +154,25 @@
     
     for (int i=0; i<7; i++) {
         
+        NSString *iconName = [NSString stringWithFormat:@"%@", [[[sevenDayWeather objectAtIndex:i][@"weather"] objectAtIndex:0]objectForKey:@"icon" ]];
+        
+        NSString *imageName = [NSString stringWithFormat:@"%@.png", iconName];
+        UIImageView *icon = [[UIImageView alloc] initWithFrame:CGRectMake(width*i, 5+height/2, height*1.5, height*1.5)];
+        icon.image = [UIImage imageNamed:imageName];
+        
         UILabel *date_label = [[UILabel alloc]initWithFrame:CGRectMake(5+width*i, 5, width, height/2)];
         NSString *date_stamp = [NSString stringWithFormat:@"%@", [[sevenDayWeather objectAtIndex:i]objectForKey:@"dt"]];
         if (i==0) {
             date_label.text = [NSString stringWithFormat:@"    Today"];
+            
+            UIImageView *backgroudImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.width, self.height)];
+            backgroudImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"BG%@.jpg",iconName]];
+            [self.view addSubview:backgroudImage];
+            [self.view sendSubviewToBack:backgroudImage];
+            
         }
         else date_label.text = [date_stamp TimeStamptoDate];
         [self.date_chart addObject:[date_stamp TimeStamptoDate]];
-        
-        
-        NSString *imageName = [NSString stringWithFormat:@"%@.png", [[[sevenDayWeather objectAtIndex:i][@"weather"] objectAtIndex:0]objectForKey:@"icon" ]];
-        UIImageView *icon = [[UIImageView alloc] initWithFrame:CGRectMake(width*i, 5+height/2, height*1.5, height*1.5)];
-        icon.image = [UIImage imageNamed:imageName];
         
         UILabel *temperature_high = [[UILabel alloc] initWithFrame:CGRectMake(15+width*i, 5+height*2, width, height/2)];
         NSString *tempH = [[NSString stringWithFormat:@"%@", [[[sevenDayWeather objectAtIndex:i]objectForKey:@"temp"]objectForKey:@"max"]] KtoC];
@@ -275,6 +284,7 @@
     UUChart *chartView = [[UUChart alloc]initwithUUChartDataFrame:CGRectMake(0, self.height*0.9, self.width, self.height/3)
                                                        withSource:self
                                                         withStyle:UUChartLineStyle];
+    chartView.backgroundColor = [UIColor clearColor];
     [chartView showInView:self.BaseScrollView];
 }
 
@@ -333,6 +343,12 @@
     self.height =self.view.frame.size.height;
     
     [self.view bringSubviewToFront:self.ActivityIndicator];
+    
+    [_toolbar setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    
+    UIFont *font = [UIFont fontWithName:@"ArialRoundedMTBold" size:20.0f];
+    _cityName.font = font;
+    [_cityName setTextColor:[UIColor whiteColor]];
     
     [self configureView];
     

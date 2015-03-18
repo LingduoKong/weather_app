@@ -39,9 +39,9 @@
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 
 @property (strong, nonatomic) NSTimer *Timer;
-@property (strong, nonatomic) IBOutlet UILabel *timeDisplayer;
 @property (strong, nonatomic) NSTimeZone *timeZone;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
+@property (strong, nonatomic) IBOutlet UILabel *timeDisplayer;
 
 @property UIScrollView *scrollviewDaily;
 @property (strong, nonatomic) IBOutlet UIScrollView *BaseScrollView;
@@ -52,6 +52,7 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *saveButton;
 @property (strong, nonatomic) IBOutlet UILabel *title_name;
 @property (strong, nonatomic) IBOutlet UIView *ActivityIndicator;
+@property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
 
 /* delegate property */
 @property (weak, nonatomic) id<UpdateUserDefaultViewDelegate> delegate;

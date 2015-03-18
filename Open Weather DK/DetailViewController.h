@@ -26,7 +26,7 @@
 
 @end
 
-@interface DetailViewController : UIViewController<UIScrollViewDelegate>
+@interface DetailViewController : UIViewController<UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate>
 @property CGFloat width;
 @property CGFloat height;
 

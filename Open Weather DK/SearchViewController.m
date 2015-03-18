@@ -94,6 +94,22 @@
         
          NSLog(@"[SearchViewController] Segue to DetailViewController passing id %@", cityid);
     }
+//    else {
+//        NSString *cityid;
+//        NSIndexPath *indexPath = [self.CityList indexPathForSelectedRow];
+//        if (_isFiltered) {
+//            cityid = [[self.filteredCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
+//        }
+//        else {
+//            cityid = [[self.allCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
+//        }
+//        
+//        DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
+//        [dvc setDetailItem:cityid];
+//        
+//        NSLog(@"[SearchViewController] Segue to DetailViewController passing id %@", cityid);
+//        
+//    }
 }
 
 

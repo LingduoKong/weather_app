@@ -14,11 +14,19 @@
 #import "DetailViewController.h"
 #import "UUChart.h"
 #import "APTimeZones.h"
+#import "CityTableViewCell.h"
 
 @interface DetailViewController ()<UUChartDataSource>
 @property NSMutableArray* high_temp_array;
 @property NSMutableArray* low_temp_array;
 @property NSMutableArray* date_chart;
+
+
+// new table view
+@property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, assign) CGFloat screenHeight;
 
 @end
 
@@ -60,7 +68,7 @@
                                                                      
                                                                      NSLog(@"[DetailViewController] data of city with id %@: %@", self.detailItem, dictionary);
                                                                      
-                                                                     
+                                                                     [self.tableView reloadData];
                                                                      
                                                                      [self configureDailyScrollView:_data];
                                                                      [self configureBaseScrollView:_data];
@@ -130,7 +138,7 @@
     // configure base scrollview
     self.BaseScrollView.delegate = self;
     self.scrollviewDaily.delegate = self;
-    self.BaseScrollView.contentSize = CGSizeMake(self.width, self.height*1.5);
+    self.BaseScrollView.contentSize = CGSizeMake(self.width, self.height*2.5);
     
 }
 
@@ -270,6 +278,87 @@
     [self.BaseScrollView addSubview:pressure];
     [self.BaseScrollView addSubview:wind_speed];
     [self plot];
+    [self addTableView];
+}
+
+#pragma make addtableview
+
+-(void)addTableView{
+    // 1
+    self.screenHeight = [UIScreen mainScreen].bounds.size.height;
+    
+    UIImage *background = [UIImage imageNamed:@"bg"];
+    
+    // 2
+    
+    self.backgroundImageView = [[UIImageView alloc] initWithImage:background];
+    self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self.view addSubview:self.backgroundImageView];
+    
+    // 4
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.height*1.5, self.width-10, self.height)];
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.separatorColor = [UIColor colorWithWhite:1 alpha:0.2];
+    self.tableView.pagingEnabled = YES;
+    [self.BaseScrollView addSubview:self.tableView];
+    
+}
+
+// 1
+#pragma mark - UITableViewDataSource
+
+// 2
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // TODO: Return count of forecast
+//    NSArray *sevenDayWeather = [[NSArray alloc]initWithArray: [_data objectForKey:@"data"]];
+
+    return 7;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    static NSString *CellIdentifier = @"CellIdentifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (! cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+    }
+    
+    // 3
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.detailTextLabel.textColor = [UIColor whiteColor];
+    
+    // TODO: Setup the cell
+    NSArray *sevenDayWeather = [[NSArray alloc]initWithArray: [_data objectForKey:@"data"]];
+    
+//    NSString *iconName = [NSString stringWithFormat:@"%@", [[[sevenDayWeather objectAtIndex:indexPath.row][@"weather"] objectAtIndex:0]objectForKey:@"icon" ]];
+//    NSString *imageName = [NSString stringWithFormat:@"%@.png", iconName];
+//                               cell.weatherType.image = [UIImage imageNamed:imageName];
+//    icon.image = [UIImage imageNamed:imageName];
+//
+    NSString *date_stamp = [NSString stringWithFormat:@"%@", [[sevenDayWeather objectAtIndex:indexPath.row]objectForKey:@"dt"]];
+    cell.textLabel.text = [date_stamp TimeStamptoDate];
+    
+    NSString *tempH = [[NSString stringWithFormat:@"%@", [[[sevenDayWeather objectAtIndex:indexPath.row]objectForKey:@"temp"]objectForKey:@"max"]] KtoC];
+    NSString *tempL = [[NSString stringWithFormat:@"%@", [[[sevenDayWeather objectAtIndex:indexPath.row]objectForKey:@"temp"]objectForKey:@"min"]] KtoC];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@" %@ / %@°C", tempH, tempL];
+//                               cell.temperature.text = [NSString stringWithFormat:@" %@ / %@°C", tempH, tempL];;
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // TODO: Determine cell height based on screen
+    return 44;
 }
 
 #pragma mark plot

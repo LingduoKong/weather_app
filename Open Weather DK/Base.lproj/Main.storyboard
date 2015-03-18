@@ -547,7 +547,7 @@ Help tips:
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tI5-Ni-kRn">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tI5-Ni-kRn">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </scrollView>
@@ -597,7 +597,7 @@ Help tips:
                 <exit id="zwB-be-jbL" userLabel="Exit" sceneMemberID="exit"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sMX-0Q-b56" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3125" y="-996"/>
+            <point key="canvasLocation" x="3125" y="-990"/>
         </scene>
     </scenes>
     <resources>
@@ -607,6 +607,6 @@ Help tips:
         <image name="setting_item" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="2Gb-BX-cJY"/>
+        <segue reference="LAh-dB-mff"/>
     </inferredMetricsTieBreakers>
 </document>

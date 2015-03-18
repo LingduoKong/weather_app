@@ -41,7 +41,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
+//    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
     // add splash view
     self.vc = [[UIViewController alloc] init];
     self.vc.view.backgroundColor = [UIColor colorWithRed:135.0/255.0 green:206.0/255.0 blue:250.0/255.0 alpha:1];
@@ -141,6 +143,7 @@
         
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -303,15 +306,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+
         // remove from NSUserDefault
         [self.AllCityIds removeObjectAtIndex:indexPath.row];
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
         [defaults setObject:self.AllCityIds forKey:@"userCities"];
         [defaults synchronize];
         
-        // remove from table
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        NSLog(@"AllCityIds: %@", self.AllCityIds);
+        
+        // remove from tabl        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
     }
 
 }

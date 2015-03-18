@@ -135,7 +135,7 @@ NSDate *dateTime;
                               error:nil];
     
     NSString* tempC = [NSString stringWithFormat:@"%@", jsonObject[@"main"][@"temp"]];
-    localNotification.alertBody = [NSString stringWithFormat:@"DK Weather Report:\nPrefered City: %@\nTemperature: %@°C", [[jsonObject objectForKey:@"city"]objectForKey:@"name"], [tempC KtoC]];
+    localNotification.alertBody = [NSString stringWithFormat:@"Prefered City: %@\nTemperature: %@°C", [[jsonObject objectForKey:@"city"]objectForKey:@"name"], [tempC KtoC]];
     
     // set the title of the button
     localNotification.alertAction = @"View";

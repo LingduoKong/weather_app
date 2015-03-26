@@ -1,14 +1,7 @@
 /********************************************************************************************
- *                                   Special Explanation
- *    Recently an accident happens with the weather API we've been using because of unknown
- *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
- *    and hope you could understand. All Data showed is unreliable.
- ********************************************************************************************/
-
-/********************************************************************************************
  * @class_name           UserDefautViewController
  * @abstract             A custom tableviewcontroller
- * @description          Shows abstract of all the cities' weather in user defaults added by        the user's save operation.
+ * @description          Shows abstract of all the cities' weather in user defaults added by the user's save operation.
  ********************************************************************************************/
 
 #import "UserDefautViewController.h"
@@ -21,27 +14,38 @@
 
 @implementation UserDefautViewController
 
+/********************************************************************************************
+ * @method           isNetworkAvailable
+ * @abstract         check whether the network is available now
+ * @description      If there isn't network connection, just keep user from using the app.
+ ********************************************************************************************/
+
 - (BOOL) isNetworkAvailable {
     Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
     NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
     if (networkStatus == NotReachable) {
         UIAlertView *failAlert = [[UIAlertView alloc] initWithTitle:@"Network Unavailable" message:@"App doesn't work!\nPlease check network and launch again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [failAlert show];
-        self.searchButton.enabled = NO;
+        self.addButton.enabled = NO;
         self.settingButton.enabled = NO;
         self.mapButton.enabled = NO;
         return NO;
     } else {
-        self.searchButton.enabled = YES;
+        self.addButton.enabled = YES;
         self.settingButton.enabled = YES;
         self.mapButton.enabled = YES;
         return YES;
     }
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-        
+/********************************************************************************************
+ * @method           addSplashView
+ * @abstract         configure the splash view
+ * @description      add a splash when loading data.
+ ********************************************************************************************/
+
+-(void)addSplashView {
+    
     // add splash view
     self.vc = [[UIViewController alloc] init];
     self.vc.view.backgroundColor = [UIColor colorWithRed:135.0/255.0 green:206.0/255.0 blue:250.0/255.0 alpha:1];
@@ -50,12 +54,14 @@
     CGFloat height = self.vc.view.frame.size.height;
     
     UILabel *projectName = [[UILabel alloc]initWithFrame:CGRectMake(10, height/5, width-20, height/5)];
-    projectName.backgroundColor = [UIColor yellowColor];
+    projectName.backgroundColor = [UIColor clearColor];
+    projectName.textColor = [UIColor whiteColor];
     projectName.font=[projectName.font fontWithSize:25];
     projectName.text = @"Weawther DK";
     
     UILabel *author = [[UILabel alloc]initWithFrame:CGRectMake(10, height/2, width-20, height/6)];
-    author.backgroundColor = [UIColor yellowColor];
+    author.backgroundColor = [UIColor clearColor];
+    author.textColor = [UIColor whiteColor];
     author.numberOfLines = 2;
     author.text = @"Author:\nLingduo Kong & Jiaming Dong";
     
@@ -63,31 +69,49 @@
     author.clipsToBounds = YES;
     projectName.layer.cornerRadius = 10;
     author.layer.cornerRadius = 10;
-    
     projectName.textAlignment = NSTextAlignmentCenter;
     author.textAlignment = NSTextAlignmentCenter;
     
+    CGRect buttonFrame = author.frame;
+    buttonFrame.origin.y = author.frame.origin.y + author.frame.size.height*2;
+    UIButton *dismissButton = [[UIButton alloc]initWithFrame:buttonFrame];
+    dismissButton.backgroundColor = [UIColor clearColor];
+    [dismissButton setTitle:@"GO" forState: UIControlStateNormal];
+    [dismissButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [dismissButton addTarget:self action: @selector(DismissSplashView) forControlEvents:UIControlEventTouchUpInside];
+    UIImageView *splashImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, width, height)];
+    splashImage.image = [UIImage imageNamed:@"BG10n"];
+    [self.vc.view addSubview:splashImage];
     [self.vc.view addSubview:projectName];
     [self.vc.view addSubview:author];
-
+    [self.vc.view addSubview:dismissButton];
+    
     [self presentViewController:self.vc animated:NO completion:^{
         
         NSLog(@"Splash screen is showing");
     }];
+}
+
+-(void)DismissSplashView{
+    [self.vc dismissViewControllerAnimated:YES completion:^{}];
+    self.vc = nil;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self addSplashView];
     
     if (![self isNetworkAvailable]) {
-        [self.vc dismissViewControllerAnimated:YES completion:^{}];
-        self.vc=nil;
-        NSLog(@"[UserDefaultViewController] dismiss splash view");
+        [self.vc dismissViewControllerAnimated:YES completion:^{return;}];
         return;
     }
-        
+    
     // locationManager initialization
     self.locationManager = [[CLLocationManager alloc] init];
     [self.locationManager setDelegate:self];
     [self.locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
     [self.locationManager setDistanceFilter:1000];
-    
     [self.locationManager requestWhenInUseAuthorization];
     
     // load user defaults data
@@ -122,8 +146,6 @@
         NSLog(@"[UserDefaultViewController] dismiss splash view");
     }
     
-    [self addAllCities];
-    
     // deal with settings
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userPreferenceDidChange) name:NSUserDefaultsDidChangeNotification object:nil];
     
@@ -156,7 +178,6 @@
         dateFormatter.dateStyle = NSDateFormatterShortStyle;
         
         [[NSUserDefaults standardUserDefaults] setObject:[dateFormatter stringFromDate:date] forKey:@"first_launch_date"];
-        
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
@@ -172,6 +193,9 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
+
+
+#pragma mark userpreference
 
 /********************************************************************************************
  * @method           userPreferenceDidChange
@@ -200,9 +224,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // night reading mode
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -217,6 +239,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -229,8 +252,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    [self isNetworkAvailable];
     
     CityTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CityCell" forIndexPath:indexPath];
     
@@ -246,15 +267,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         cell.cityName.textColor = [UIColor blackColor];
     }
     
-    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", self.AllCityIds[indexPath.row]];
+    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", self.AllCityIds[indexPath.row]];
     NSLog(@"[UserDefaultViewController] get city with id %@ from url: %@", self.AllCityIds[indexPath.row], url);
     
     // retrieve the needed data by id
     [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                              success:^(NSMutableDictionary *dictionary, NSError *error) {
                                                                  
-                                                                 NSLog(@"[UserDefaultViewController] data of city with id %@: %@", self.AllCityIds[indexPath.row], dictionary);
-                                                                 
+                                                                NSLog(@"[UserDefaultViewController] data of city with id %@: %@", self.AllCityIds[indexPath.row], dictionary);
                                                                  // set map sign
                                                                  if ([self.AllCityIds[indexPath.row] isEqual:self.currentCityId]) {
                                                                      cell.mapSign.hidden = NO;
@@ -265,13 +285,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                                      }
                                                                  }
                                                                  
-                                                                 cell.cityName.text = dictionary[@"city"][@"name"];
+                                                                 cell.cityName.text = dictionary[@"name"];
                                                                  
                                                                  NSString* tempC = [[NSString stringWithFormat:@"%@", dictionary[@"main"][@"temp"]] KtoC];
 
                                                                  cell.temperature.text = [NSString stringWithFormat:@"%@°C", tempC];
                                                                  
-                                                                 NSString *imageName = [NSString stringWithFormat:@"%@.png", [dictionary[@"weather"]objectAtIndex:0][@"icon"] ];
+                                                                 NSString *imageName = [NSString stringWithFormat:@"%@.png",[[dictionary[@"weather"] objectAtIndex:0] objectForKey:@"icon"]];
                                                                  
                                                                  cell.weatherType.image = [UIImage imageNamed:imageName];
                                                                  // Use dispatch_async to update the table on the main thread
@@ -279,7 +299,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                                      
                                                                      if (self.vc!=nil && indexPath.row == [self.AllCityIds count]-1) {
-                                                                         [self.vc dismissViewControllerAnimated:5.0 completion:^{}];
+                                                                         [self.vc dismissViewControllerAnimated:YES completion:^{}];
                                                                          self.vc=nil;
                                                                          NSLog(@"[UserDefaultViewController] dismiss splash view");
                                                                      }
@@ -287,7 +307,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                              }
                                                              failure:^{
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     NSLog(@"Problem with Data");
+                                                                     NSLog(@"[UserDefaultViewController] Problem with Data");
                                                                      if (self.vc!=nil) {
                                                                          NSLog(@"[UserDefaultViewController] Splash view will keep");
                                                                      }
@@ -304,18 +324,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-
         // remove from NSUserDefault
         [self.AllCityIds removeObjectAtIndex:indexPath.row];
-        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
         [defaults setObject:self.AllCityIds forKey:@"userCities"];
         [defaults synchronize];
         
         NSLog(@"AllCityIds: %@", self.AllCityIds);
         
-        // remove from tabl        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
+        // remove from table
+//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 
 }
@@ -332,8 +351,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSLog(@"[UserDefaultViewController] City ID selected(press cell): %@", cityid);
         
         DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
-        [dvc setDetailItem:cityid];
-        
+        [dvc setDetailItem:cityid];        
         dvc.delegate = self;
     }
     
@@ -427,39 +445,48 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                 NSLog(@"[UserDefaultViewController] cityName: %@, countryCode: %@", [test[@"City"] description], [test[@"CountryCode"] description]);
                 
                 NSString* currentCityName = [test[@"City"] description];
-                //NSString* currentCountryCode = [test[@"CountryCode"] description];
+                NSString* currentCountryCode = [test[@"CountryCode"] description];
                 
-                for (NSDictionary *cityname in _allCityNames ) {
-                    if ([[cityname objectForKey:@"name"] isEqualToString:currentCityName]) {
-                        self.currentCityId = [cityname objectForKey:@"id"];
-                        NSLog(@"currentCityId: %@", self.currentCityId);
-                        
-                        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                        NSArray *cityIdArray = (NSArray*)[defaults objectForKey:@"userCities"];
-                        NSMutableArray *newArr = nil;
-                        
-                        if (!cityIdArray) {
-                            newArr = [[NSMutableArray alloc] init];
-                        }
-                        else {
-                            newArr = [[NSMutableArray alloc] initWithArray:cityIdArray];
-                        }
-                        
-                        // add current city id to userCities as a default.
-                        if (![newArr containsObject:self.currentCityId]) {
-                            [newArr insertObject:self.currentCityId atIndex:0];
-                        }
-                        
-                        [defaults setObject:newArr forKey:@"userCities"];
-                        self.AllCityIds = [[NSMutableArray alloc] initWithArray:newArr];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.tableView reloadData];
-                        });
-                        
-                        break;
-                    }
-                }
+                NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?q=%@,%@&mode=json", currentCityName, currentCountryCode];
                 
+                // deal with space
+                url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+                
+                [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
+                 success:^(NSMutableDictionary *dictionary, NSError *error) {
+                     // get new current city id
+                     self.currentCityId = dictionary[@"id"];
+                     NSLog(@"currentCityId: %@", self.currentCityId);
+                     
+                     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                     NSArray *cityIdArray = (NSArray*)[defaults objectForKey:@"userCities"];
+                     NSMutableArray *newArr = nil;
+                     
+                     if (!cityIdArray) {
+                         newArr = [[NSMutableArray alloc] init];
+                     }
+                     else {
+                         newArr = [[NSMutableArray alloc] initWithArray:cityIdArray];
+                     }
+                     
+                     // add current city id to userCities as a default.
+                     if (![newArr containsObject:self.currentCityId]) {
+                         [newArr insertObject:self.currentCityId atIndex:0];
+                     }
+                     
+                     [defaults setObject:newArr forKey:@"userCities"];
+                     self.AllCityIds = [[NSMutableArray alloc] initWithArray:newArr];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self.tableView reloadData];
+                     });
+                 }
+                 failure:^{
+                     self.currentCityId = @"null";
+        
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                        NSLog(@"[UserDefaultViewController] Problem with Updating Locations.");
+                     });
+                 }];
             }
             else if (error == nil && [placemarks count] == 0)
             {
@@ -519,11 +546,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         region.notifyOnExit = YES;
         [self.locationManager startMonitoringForRegion:bregion];
         
-        
-        // Show map
-        //self.mapView.showsUserLocation = YES;
-        //self.mapView.showsPointsOfInterest = YES;
-        
     } else if (status == kCLAuthorizationStatusDenied) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Location services not authorized"
                                                         message:@"This app needs you to authorize locations services to work."
@@ -534,119 +556,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     } else {
         NSLog(@"[UserDefaultViewController] Wrong location status");
     }
-}
-
-/********************************************************************************************
- * @method           addAllCities
- * @abstract         a helper function to load ALL the cities whose data is available to access
- * @description      Sence we are using fake data, the number of cities that are supported is 
- *                   limited. So we need to add all of them when the program is launched.
- ********************************************************************************************/
-
--(void)addAllCities{
-    NSMutableDictionary *tempDict;
-    _allCityNames = [[NSMutableArray alloc] init];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1283240" forKey:@"id"];
-    [tempDict setObject:@"Kathmandu" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3632308" forKey:@"id"];
-    [tempDict setObject:@"Merida" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1280737" forKey:@"id"];
-    [tempDict setObject:@"Lhasa" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"745042" forKey:@"id"];
-    [tempDict setObject:@"İstanbul" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3496831" forKey:@"id"];
-    [tempDict setObject:@"Mao" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"523523" forKey:@"id"];
-    [tempDict setObject:@"Nalchik" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"2267057" forKey:@"id"];
-    [tempDict setObject:@"Lisbon" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3082707" forKey:@"id"];
-    [tempDict setObject:@"Walbrzych" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3091150" forKey:@"id"];
-    [tempDict setObject:@"Naklo nad Notecia" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1784658" forKey:@"id"];
-    [tempDict setObject:@"Zhengzhou" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"2643743" forKey:@"id"];
-    [tempDict setObject:@"London" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"993800" forKey:@"id"];
-    [tempDict setObject:@"Johannesburg" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"524901" forKey:@"id"];
-    [tempDict setObject:@"Moscow" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1850147" forKey:@"id"];
-    [tempDict setObject:@"Tokyo" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"2147714" forKey:@"id"];
-    [tempDict setObject:@"Sydney" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1819729" forKey:@"id"];
-    [tempDict setObject:@"Hong Kong" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"5856195" forKey:@"id"];
-    [tempDict setObject:@"Honolulu" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"5391959" forKey:@"id"];
-    [tempDict setObject:@"San Francisco" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3530597" forKey:@"id"];
-    [tempDict setObject:@"Mexico City" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"5128638" forKey:@"id"];
-    [tempDict setObject:@"New York" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3451190" forKey:@"id"];
-    [tempDict setObject:@"Rio de Janeiro" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"4887442" forKey:@"id"];
-    [tempDict setObject:@"Chicago" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
 }
 
 @end

@@ -15,6 +15,9 @@
 - (void) retrieveRSSFeedForURL:(NSString*)url
                        success:(void (^)(NSMutableDictionary *dictionary, NSError *error))successCompletion
                        failure:(void (^)(void))failureCompletion;
+//- (NSMutableDictionary*) returnRSSFeedForURL:(NSString*)url
+//                       success:(void (^)(NSMutableDictionary *dictionary, NSError *error))successCompletion
+//                       failure:(void (^)(void))failureCompletion;
 - (BOOL) isNetworkAvailable;
 
 @end

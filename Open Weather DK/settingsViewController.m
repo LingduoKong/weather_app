@@ -1,11 +1,4 @@
 /********************************************************************************************
- *                                   Special Explanation
- *    Recently an accident happens with the weather API we've been using because of unknown
- *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
- *    and hope you could understand. All Data showed is unreliable.
- ********************************************************************************************/
-
-/********************************************************************************************
  * @class_name           settingsViewController
  * @abstract             A custom viewcontroller for setting notifications.
  * @description          In this viewcontroller you can choose a city of which the weather you wanna be notified and when you wanna be notified. A date picker and a picker view are included.
@@ -13,6 +6,7 @@
 
 #import "settingsViewController.h"
 #import "NSString+KtoC.h"
+#import "SharedNetworking.h"
 
 @interface settingsViewController ()
 
@@ -38,6 +32,8 @@ NSDate *dateTime;
         cityArray = [[NSMutableArray alloc] initWithArray:cityIdArray];
     }
     
+    self.cities = [[NSMutableArray alloc] init];
+    
     [self.cityPicker setDelegate:self];
     self.dataPicker_label.layer.cornerRadius = 10;
     self.dataPicker_label.layer.masksToBounds=YES;
@@ -58,7 +54,29 @@ NSDate *dateTime;
 }
 
 - (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
-    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", cityArray[row]];
+    
+    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", cityArray[row]];
+    
+    NSString *cityName = nil;
+    
+//    [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL: url
+//                                                             success:^(NSMutableDictionary *dictionary, NSError *error) {
+//                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+//                                                                     
+//                                                                     [self.cities addObject:dictionary];
+//
+//                                                                 });
+//                                                             }
+//                                                             failure:^{
+//                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+//                                                                     NSLog(@"Problem with Data");
+//                                                                     
+//                                                                 });
+//                                                             }];
+//    NSLog(@"%@", self.cities);
+//
+//    return [[self.cities objectAtIndex:row] objectForKey:@"name"];
+
     
     NSData *jsonData = [NSData dataWithContentsOfURL:
                         [NSURL URLWithString: url]];
@@ -67,7 +85,8 @@ NSDate *dateTime;
                               JSONObjectWithData:jsonData
                               options:NSJSONReadingMutableLeaves
                               error:nil];
-    return [[jsonObject objectForKey:@"city"]objectForKey:@"name"];
+    cityName =  [jsonObject objectForKey:@"name"];
+    return cityName;
 }
 
 // date picker
@@ -96,6 +115,7 @@ NSDate *dateTime;
          [theAlert show];
          return;
      }
+
     // check if there exist cities to select
     if ([cityArray count] == 0) {
         UIAlertView *theAlert = [[UIAlertView alloc] initWithTitle:@"Warning!"
@@ -122,7 +142,7 @@ NSDate *dateTime;
     
     // set the content of the local notification
     NSInteger row = [self.cityPicker selectedRowInComponent:0];
-    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", [cityArray objectAtIndex:row]];
+    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", [cityArray objectAtIndex:row]];
     
     NSLog(@"[settingsViewController] get the name of city %@ from url: %@", [cityArray objectAtIndex:row], url);
     
@@ -135,7 +155,7 @@ NSDate *dateTime;
                               error:nil];
     
     NSString* tempC = [NSString stringWithFormat:@"%@", jsonObject[@"main"][@"temp"]];
-    localNotification.alertBody = [NSString stringWithFormat:@"Prefered City: %@\nTemperature: %@°C", [[jsonObject objectForKey:@"city"]objectForKey:@"name"], [tempC KtoC]];
+    localNotification.alertBody = [NSString stringWithFormat:@"DK Weather Report:\nPrefered City: %@\nTemperature: %@°C", [jsonObject objectForKey:@"name"], [tempC KtoC]];
     
     // set the title of the button
     localNotification.alertAction = @"View";
@@ -150,6 +170,7 @@ NSDate *dateTime;
     
     localNotification.userInfo = infoDic;
     // trigger the notification at the scheduled date
+    //[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
     NSLog(@"[settingsViewController] Local Notification set in UserDefaulViewController: %@", localNotification);
     

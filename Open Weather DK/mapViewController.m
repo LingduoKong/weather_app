@@ -1,11 +1,4 @@
 /********************************************************************************************
- *                                   Special Explanation
- *    Recently an accident happens with the weather API we've been using because of unknown
- *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
- *    and hope you could understand. All Data showed is unreliable.
- ********************************************************************************************/
-
-/********************************************************************************************
  * @class_name           mapViewController
  * @abstract             A custom viewcontroller to show the mapview
  * @description          The main part of this view controller is map view which have annotations
@@ -38,7 +31,7 @@
 - (void)pass:(NSMutableArray*)cityIdsFromUDVC {
     if (!self.AllCityIds) {
         self.AllCityIds = [[NSMutableArray alloc] initWithArray:cityIdsFromUDVC];
-        NSLog(@"self.AllCityIds: %@", self.AllCityIds);
+        NSLog(@"[mapViewController] self.AllCityIds: %@", self.AllCityIds);
         // Update the view
         [self configureView];
     }
@@ -55,14 +48,15 @@
         return;
     }
     for (NSString* cityId in self.AllCityIds) {
-        NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json",cityId];
+        NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", cityId];
+        
         NSLog(@"[mapViewController] get data of city %@ from url: %@", cityId, url);
         
         [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
                                                                  success:^(NSMutableDictionary *dictionary, NSError *error) {
-                                                                     NSLog(@"[mapViewController] data of city %@: %@", cityId, dictionary);
+                                                                     NSLog(@"dictionary: %@", dictionary);
                                                                      
-                                                                     NSDictionary* coords = [[dictionary objectForKey:@"city"]objectForKey:@"coord"];
+                                                                     NSDictionary* coords = [dictionary objectForKey:@"coord"];
                                                                      CLLocationCoordinate2D centerCoord;
                                                                      centerCoord.latitude = [coords[@"lat"] doubleValue];
                                                                      centerCoord.longitude = [coords[@"lon"] doubleValue];
@@ -73,7 +67,7 @@
                                                                      
                                                                      NSString* temp_m = [[NSString alloc] initWithFormat:@"%@°C/%@°C", [temp_min KtoC], [temp_max KtoC]];
                                                                      
-                                                                     WeatherAnnotation *annotation = [[WeatherAnnotation alloc] initWithCityName:dictionary[@"city"][@"name"] temperature:temp_m coordinate:centerCoord cityId:cityId];
+                                                                     WeatherAnnotation *annotation = [[WeatherAnnotation alloc] initWithCityName:dictionary[@"name"] temperature:temp_m coordinate:centerCoord cityId:cityId];
                                                                      
                                                                      // store city id into the new annotation
                                                                      //annotation.cityId = [[NSString alloc] initWithString:cityId];
@@ -97,11 +91,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-
+//    self.mapView = [[MKMapView alloc] initWithFrame:[self.view bounds]];
+    //self.mapView.showsUserLocation = YES;
     [self.mapView setMapType:MKMapTypeHybrid];
     [self.view addSubview:self.mapView];
     
     [self.mapView setDelegate:self];
+    
     
     // initialize map camera
     self.mapCam = [[MKMapCamera alloc] init];
@@ -130,6 +126,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
 ///-----------------------------------------------------------------------------
 #pragma mark -- mapView delegate
 ///-----------------------------------------------------------------------------
@@ -139,6 +145,7 @@
     static NSString *identifier = @"WeatherAnnotation";
     
     if ([annotation isKindOfClass:[WeatherAnnotation class]]) {
+        NSLog(@"WeatherAnnotation");
         
         WeatherAnnotation *location = (WeatherAnnotation *) annotation;
         MKAnnotationView *annotationView = (MKAnnotationView *) [theMapView dequeueReusableAnnotationViewWithIdentifier:identifier];
@@ -161,7 +168,7 @@
             annotationView.leftCalloutAccessoryView = nil;
             return annotationView;
         }
-        NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", location.cityId];
+        NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", location.cityId];
         
         NSLog(@"[mapViewController] get data of city %@ from url: %@", location.cityId, url);
         
@@ -176,7 +183,7 @@
                                                                      annotationView.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage: [UIImage imageNamed:imageName]];
                                                                      // Use dispatch_async to update the table on the main thread
                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     
+                                                                         
                                                                      });
                                                                  }
                                                                  failure:^{
@@ -190,11 +197,12 @@
     return nil;
 }
 
--(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
-{
+-(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     WeatherAnnotation* location = (WeatherAnnotation*)view.annotation;
     
     DetailViewController *dvc = [self.storyboard instantiateViewControllerWithIdentifier:@"DetailViewController"];
+    // Configure the RecipeAddViewController. In this case, it reports any
+    // changes to a custom delegate object.
     [dvc setDetailItem:location.cityId];
     [dvc setDelegate:self.delegate];
     // Create the navigation controller and present it.
@@ -202,10 +210,10 @@
     [self presentViewController:dvc animated:YES completion: nil];
 }
 
-// sample of current city
+// 给圆圈设置必要的属性
 - (MKOverlayView*)mapView:(MKMapView *)mapView viewForOverlay:(id<MKOverlay>)overlay
 {
-    if ([overlay isKindOfClass:[MKCircle class]]) {
+    if ([overlay isKindOfClass:[MKCircle class]]) {     // 从mapview里找出MKCircle
         
         MKCircleView *circleView = [[MKCircleView alloc] initWithOverlay:overlay];
         circleView.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.1];
@@ -256,8 +264,8 @@
         return;
     }
     NSLog(@"[mapViewController] city id from Bookmark: %@", cityId);
-   
-    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/LingduoKong/mydata/master/weatherData/%@.json", cityId];
+    
+    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?id=%@&mode=json", cityId];
     
     NSLog(@"[mapViewController] get data of city %@ from url: %@", cityId, url);
     
@@ -271,11 +279,12 @@
     
     NSLog(@"[mapViewController] data of city %@: %@", cityId, jsonObject);
     
-    NSDictionary *coords = [[jsonObject objectForKey:@"city"]objectForKey:@"coord"];
-
+    NSDictionary *coords = [jsonObject objectForKey:@"coord"];
     
     
-    [UIView animateWithDuration:1
+    [UIView animateWithDuration:1 //时长
+                          delay:1 //延迟时间
+                        options:UIViewAnimationOptionTransitionFlipFromLeft//动画效果
                      animations:^{
                          
                          self.mapCam.altitude = 50000000;
@@ -289,7 +298,6 @@
                          self.mapCam.centerCoordinate = centerCoord;
                          [self.mapView setCamera:self.mapCam animated:YES];
                      } completion:^(BOOL finish){
-
                          CLLocationCoordinate2D centerCoord;
                          centerCoord.latitude = [[coords objectForKey:@"lat"] doubleValue];
                          centerCoord.longitude = [[coords objectForKey:@"lon"] doubleValue];

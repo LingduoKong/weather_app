@@ -1,11 +1,4 @@
 /********************************************************************************************
- *                                   Special Explanation
- *    Recently an accident happens with the weather API we've been using because of unknown
- *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
- *    and hope you could understand. All Data showed is unreliable.
- ********************************************************************************************/
-
-/********************************************************************************************
  * @class_name           mapViewController
  * @abstract             A custom viewcontroller to show the mapview
  * @description          The main part of this view controller is map view which have annotations

@@ -45,13 +45,7 @@
     [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:url]
                                  completionHandler:^(NSData *data,
                                                      NSURLResponse *response,
-                                                     NSError *error) {
-                                     
-                                     // handle response
-                                     //NSLog(@"\nData:%@",data);
-                                     //NSLog(@"\nResponse:\n%@",response);
-                                     //NSLog(@"Error:%@",[error localizedDescription]);
-                                     
+                                                     NSError *error) {                                                            
                                      
                                      NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
                                      if (httpResp.statusCode == 200) {

@@ -1,14 +1,7 @@
 /********************************************************************************************
- *                                   Special Explanation
- *    Recently an accident happens with the weather API we've been using because of unknown
- *    reasons, so we have to use fake data instead. We extend our apology for the inconvenience
- *    and hope you could understand. All Data showed is unreliable.
- ********************************************************************************************/
-
-/********************************************************************************************
  * @class_name           SearchViewcontroller
  * @abstract             A custom tableviewcontroller with a search bar.
- * @description          In this viewcontroller you can input the city you want in the search bar 
+ * @description          In this viewcontroller you can input the city you want in the search bar
  and the table view will return the result(s). Currently we only support 22 cities sence the API sucks.
  ********************************************************************************************/
 
@@ -24,9 +17,6 @@
 - (IBAction)unwindToList:(UIStoryboardSegue *)segue;
 
 @property (nonatomic, strong) NSMutableArray *AllCities;
-
-@property (nonatomic, strong) NSMutableArray *allCityNames;
-@property (nonatomic, strong) NSMutableArray *filteredCityNames;
 @property BOOL isFiltered;
 
 @property (strong, nonatomic) IBOutlet UISearchBar *CitySearchBar;

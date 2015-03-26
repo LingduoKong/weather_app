@@ -1,10 +1,9 @@
-//
-//  SearchViewController.m
-//  Open Weather D.K.
-//
-//  Created by Lingduo Kong on 2/27/15.
-//  Copyright (c) 2015 The University of Chicago, Department of Computer Science. All rights reserved.
-//
+/********************************************************************************************
+ * @class_name           SearchViewcontroller
+ * @abstract             A custom tableviewcontroller with a search bar.
+ * @description          In this viewcontroller you can input the city you want in the search bar
+ and the table view will return the result(s). Currently we only support 22 cities sence the API sucks.
+ ********************************************************************************************/
 
 #import "SearchViewController.h"
 
@@ -14,11 +13,48 @@
 
 @implementation SearchViewController
 
+/********************************************************************************************
+ * @method           downloadCities
+ * @abstract         download all the cities supported
+ * @description      download all the cities supported
+ ********************************************************************************************/
+
+- (void)downloadCities : (NSString*)searchText {
+    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/find?q=%@&type=like&mode=json", searchText];
+    
+    NSLog(@"[SearchViewController] download all the cities for url: %@", url);
+    
+    // deal with space
+    url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    [[SharedNetworking sharedSharedNetworking] retrieveRSSFeedForURL:url
+                                                             success:^(NSMutableDictionary *dictionary, NSError *error) {
+                                                                 if ([_AllCities count] != 0) {
+                                                                     [_AllCities removeAllObjects];
+                                                                 }
+                                         
+                                                                 for (NSMutableDictionary* cityDict in dictionary[@"list"]) {
+                                                                     [_AllCities addObject:cityDict];
+                                                                 }
+                                                                 
+                                                                 NSLog(@"[SearchViewController] _AllCities: %@", _AllCities);
+                                                                 // Use dispatch_async to update the table on the main thread
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     [_CityList reloadData];
+
+                                                                 });
+                                                             }
+                                                             failure:^{
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     NSLog(@"[SearchViewController] Problem with Data");
+                                                                 });
+                                                             }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-
-    [self addAllCities];
+    
+    _AllCities= [[NSMutableArray alloc] init];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -33,22 +69,13 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (_isFiltered) {
-        return [_filteredCityNames count];
-    }
-    else return [_allCityNames count];
+    return _AllCities.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SearchResultCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ResultCell"];
-    if (_isFiltered) {
-        cell.City.text = [[_filteredCityNames objectAtIndex:indexPath.row]objectForKey:@"name"];
+    cell.City.text = [[_AllCities objectAtIndex:indexPath.row] objectForKey:@"name"];
 
-    }
-    else {
-        cell.City.text = [[_allCityNames objectAtIndex:indexPath.row]objectForKey:@"name"];
-
-    }
     return cell;
 }
 
@@ -56,20 +83,12 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     
-    if (searchText.length==0) {
+    if (searchText.length<=3) {
         _isFiltered = NO;
     }
     else {
         _isFiltered = YES;
-        _filteredCityNames = [[NSMutableArray alloc]init];
-        
-        for (NSDictionary *cityname in _allCityNames ) {
-            NSRange cityNameRange = [[cityname objectForKey:@"name"] rangeOfString: searchText options:NSCaseInsensitiveSearch];
-            
-            if (cityNameRange.location!=NSNotFound) {
-                [_filteredCityNames addObject:cityname];
-            }
-        }
+        [self downloadCities:searchText];
     }
     
     // reload tableview
@@ -80,36 +99,15 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showSearchDetail"]) {
-        NSString *cityid;
         NSIndexPath *indexPath = [self.CityList indexPathForSelectedRow];
-        if (_isFiltered) {
-            cityid = [[self.filteredCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
-        }
-        else {
-            cityid = [[self.allCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
-        }
+        //NSDate *object = [self.AllCityNames objectAtIndex:indexPath.row];
+        NSString *cityid = [[self.AllCities objectAtIndex:indexPath.row] objectForKey:@"id"];
         
         DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
         [dvc setDetailItem:cityid];
         
-         NSLog(@"[SearchViewController] Segue to DetailViewController passing id %@", cityid);
-    }
-//    else {
-//        NSString *cityid;
-//        NSIndexPath *indexPath = [self.CityList indexPathForSelectedRow];
-//        if (_isFiltered) {
-//            cityid = [[self.filteredCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
-//        }
-//        else {
-//            cityid = [[self.allCityNames objectAtIndex:indexPath.row]objectForKey:@"id"];
-//        }
-//        
-//        DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
-//        [dvc setDetailItem:cityid];
-//        
-//        NSLog(@"[SearchViewController] Segue to DetailViewController passing id %@", cityid);
-//        
-//    }
+        NSLog(@"[SearchViewController] Segue to DetailViewController passing id %@", cityid);
+    } 
 }
 
 
@@ -120,119 +118,5 @@
 
 - (IBAction)unwindToList:(UIStoryboardSegue *)segue{
     
-}
-
-/********************************************************************************************
- * @method           addAllCities
- * @abstract         a helper function to load ALL the cities whose data is available to access
- * @description      Sence we are using fake data, the number of cities that are supported is
- *                   limited. So we need to add all of them when the program is launched.
- ********************************************************************************************/
-
--(void)addAllCities {
-    NSMutableDictionary *tempDict;
-    _allCityNames = [[NSMutableArray alloc] init];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1283240" forKey:@"id"];
-    [tempDict setObject:@"Kathmandu" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3632308" forKey:@"id"];
-    [tempDict setObject:@"Merida" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1280737" forKey:@"id"];
-    [tempDict setObject:@"Lhasa" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"745042" forKey:@"id"];
-    [tempDict setObject:@"İstanbul" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3496831" forKey:@"id"];
-    [tempDict setObject:@"Mao" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"523523" forKey:@"id"];
-    [tempDict setObject:@"Nalchik" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"2267057" forKey:@"id"];
-    [tempDict setObject:@"Lisbon" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3082707" forKey:@"id"];
-    [tempDict setObject:@"Walbrzych" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3091150" forKey:@"id"];
-    [tempDict setObject:@"Naklo nad Notecia" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1784658" forKey:@"id"];
-    [tempDict setObject:@"Zhengzhou" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"2643743" forKey:@"id"];
-    [tempDict setObject:@"London" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"993800" forKey:@"id"];
-    [tempDict setObject:@"Johannesburg" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"524901" forKey:@"id"];
-    [tempDict setObject:@"Moscow" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1850147" forKey:@"id"];
-    [tempDict setObject:@"Tokyo" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"2147714" forKey:@"id"];
-    [tempDict setObject:@"Sydney" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"1819729" forKey:@"id"];
-    [tempDict setObject:@"Hong Kong" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"5856195" forKey:@"id"];
-    [tempDict setObject:@"Honolulu" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"5391959" forKey:@"id"];
-    [tempDict setObject:@"San Francisco" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3530597" forKey:@"id"];
-    [tempDict setObject:@"Mexico City" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"5128638" forKey:@"id"];
-    [tempDict setObject:@"New York" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"3451190" forKey:@"id"];
-    [tempDict setObject:@"Rio de Janeiro" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-    
-    tempDict = [[NSMutableDictionary alloc] init];
-    [tempDict setObject:@"4887442" forKey:@"id"];
-    [tempDict setObject:@"Chicago" forKey:@"name"];
-    [_allCityNames addObject:tempDict];
-
 }
 @end

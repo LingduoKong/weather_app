@@ -10,7 +10,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     // Register non-interactive notifications.
+    //[self registerForNotifications];
     
+    // Register interactive notifications.
     [self registerForNotifications];
     
     // Test and handle launching from a notification
@@ -23,9 +25,9 @@
         NSLog(@"Notification payload: %@", [notification.userInfo objectForKey:@"payload"]);
         
         // Show an alert view so we can verify this launch sequence
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"DK Weather"
-                                                        message:@"Welcome Back!"
-                                                       delegate:self cancelButtonTitle:@"OK"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LocalNotifications from didFinishLaunchingWithOptions"
+                                                        message:@"Notifications from application"
+                                                       delegate:self cancelButtonTitle:@"Cancel"
                                               otherButtonTitles:nil];
         [alert show];
     }
@@ -71,16 +73,19 @@
     [navBarTextAttributes setObject:color forKey:NSForegroundColorAttributeName ];
     
     [[UIBarButtonItem appearance] setTitleTextAttributes:navBarTextAttributes forState:0];
+    
     [[UINavigationBar appearance] setTitleTextAttributes: navBarTextAttributes];
-    [[UINavigationBar appearance] setBarTintColor:skyBlue];
+    
     [[UINavigationBar appearance] setTintColor:color];
     
     [[UIToolbar appearance] setTintColor:color];
+    
     [[UIToolbar appearance] setBarTintColor:skyBlue];
     
     [[UIDatePicker appearance] setBackgroundColor:skyBlue];
     
     [[UIPickerView appearance] setBackgroundColor:skyBlue];
+
 }
 
 /*******************************************************************************
@@ -198,7 +203,7 @@
     }
 }
 
-/*- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier
 forLocalNotification:(NSDictionary *)userInfo
   completionHandler:(void (^)())completionHandler
 {
@@ -210,7 +215,7 @@ forLocalNotification:(NSDictionary *)userInfo
     if (completionHandler) {
         completionHandler();
     }
-}*/
+}
 
 // original
 

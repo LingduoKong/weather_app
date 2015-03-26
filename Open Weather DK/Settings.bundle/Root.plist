@@ -5,20 +5,20 @@
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>Initial Launch</string>
-			<key>DefaultValue</key>
-			<string>first launch date</string>
-			<key>Key</key>
-			<string>first_launch_date</string>
-		</dict>
-		<dict>
 			<key>Title</key>
 			<string>User Preferences</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>first launch date</string>
+			<key>Key</key>
+			<string>first_launch_date</string>
+			<key>Title</key>
+			<string>Initial Launch</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>

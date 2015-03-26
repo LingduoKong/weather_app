@@ -1,59 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qTE-JE-hxv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qTE-JE-hxv">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Instructions-->
-        <scene sceneID="V3z-TN-0B9">
-            <objects>
-                <viewController title="Instructions" id="Mhw-oF-ue4" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Kfd-IR-Npm"/>
-                        <viewControllerLayoutGuide type="bottom" id="kiy-0Z-Hia"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="PhQ-bt-DWd">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aka-sS-RCJ">
-                                <rect key="frame" x="16" y="64" width="568" height="536"/>
-                                <color key="backgroundColor" red="0.74360233750000004" green="0.97170538539999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <string key="text">Show current weather condition and sever-day forecasts. It can match your current location and time of the day for more convenience. 
-Features: 
--It shows all details: winds, pressure, humidity and a brief description. 
--A plot of temperature for next week offers the trend of climate change. 
--An interactive map shows all cities chosen in the list. Clicking a bookmark and selecting one city can lead to the location of the city. If the icon of that city is clicked, a label including some info will appear. The label can also be clicked for more details.
--Search in the city list to add cities you prefer.
--Set notification to alert you daily weather at any time you want.
--Track all cities you prefer.
-Help tips:
--Scroll down for more details and a plot.
--Scroll left and right in the middle to see weather of next week.
--Tap plus sign to add cities.
--Tap info sign to get using guides
--Tap map to see cities in a map.
--Tap setting sign to set a notification.
-</string>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.74360233750000004" green="0.97170538539999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="Aka-sS-RCJ" secondAttribute="trailing" id="1cP-Ul-BBn"/>
-                            <constraint firstItem="Aka-sS-RCJ" firstAttribute="top" secondItem="Kfd-IR-Npm" secondAttribute="bottom" id="9Tq-Ci-Lvd"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="Aka-sS-RCJ" secondAttribute="bottom" id="H5E-4W-9fY"/>
-                            <constraint firstItem="Aka-sS-RCJ" firstAttribute="leading" secondItem="PhQ-bt-DWd" secondAttribute="leadingMargin" id="UA0-2U-adB"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mRv-sy-8xK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2774" y="-106"/>
-        </scene>
         <!--City Management-->
         <scene sceneID="QQF-Ts-QMv">
             <objects>
@@ -71,40 +23,40 @@ Help tips:
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999964" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aLz-27-WAl">
-                                            <rect key="frame" x="84" y="8" width="78" height="60"/>
+                                            <rect key="frame" x="83" y="15" width="78" height="46"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PaQ-G0-Gcq">
-                                            <rect key="frame" x="16" y="8" width="60" height="60"/>
+                                            <rect key="frame" x="18" y="15" width="45" height="46"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="60" id="IAU-sB-enE"/>
+                                                <constraint firstAttribute="width" constant="45" id="IAU-sB-enE"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="brief temperature" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y3k-Or-h6B">
-                                            <rect key="frame" x="447" y="8" width="125" height="60"/>
+                                            <rect key="frame" x="447" y="15" width="125" height="46"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="map_sign" translatesAutoresizingMaskIntoConstraints="NO" id="RuN-16-XCn">
-                                            <rect key="frame" x="177" y="23" width="30" height="30"/>
+                                            <rect key="frame" x="176" y="23" width="30" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="RuN-16-XCn" secondAttribute="height" multiplier="1:1" id="Tjs-fz-vAe"/>
                                             </constraints>
                                         </imageView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="PaQ-G0-Gcq" firstAttribute="top" secondItem="8m9-Ce-TWd" secondAttribute="top" constant="8" id="5Jp-K1-qGz"/>
-                                        <constraint firstItem="aLz-27-WAl" firstAttribute="leading" secondItem="PaQ-G0-Gcq" secondAttribute="trailing" constant="8" id="Ese-H7-Jf6"/>
+                                        <constraint firstItem="PaQ-G0-Gcq" firstAttribute="top" secondItem="8m9-Ce-TWd" secondAttribute="top" constant="15" id="5Jp-K1-qGz"/>
+                                        <constraint firstItem="aLz-27-WAl" firstAttribute="leading" secondItem="PaQ-G0-Gcq" secondAttribute="trailing" constant="20" id="Ese-H7-Jf6"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="RuN-16-XCn" secondAttribute="bottom" constant="15" id="LH4-bf-gte"/>
-                                        <constraint firstAttribute="bottom" secondItem="PaQ-G0-Gcq" secondAttribute="bottom" constant="8.5" id="U4T-D5-E3Y"/>
+                                        <constraint firstAttribute="bottom" secondItem="PaQ-G0-Gcq" secondAttribute="bottom" constant="15" id="U4T-D5-E3Y"/>
                                         <constraint firstItem="RuN-16-XCn" firstAttribute="top" secondItem="8m9-Ce-TWd" secondAttribute="topMargin" constant="15" id="XAX-4z-KV0"/>
                                         <constraint firstItem="RuN-16-XCn" firstAttribute="leading" secondItem="aLz-27-WAl" secondAttribute="trailing" constant="15" id="Xc7-DL-45B"/>
                                         <constraint firstItem="aLz-27-WAl" firstAttribute="top" secondItem="y3k-Or-h6B" secondAttribute="top" id="XmH-sT-eb1"/>
                                         <constraint firstItem="aLz-27-WAl" firstAttribute="bottom" secondItem="y3k-Or-h6B" secondAttribute="bottom" id="ZWK-ME-NYt"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="y3k-Or-h6B" secondAttribute="trailing" constant="20" id="hWe-vb-wuu"/>
-                                        <constraint firstItem="PaQ-G0-Gcq" firstAttribute="leading" secondItem="8m9-Ce-TWd" secondAttribute="leadingMargin" constant="8" id="kPt-QN-LZh"/>
+                                        <constraint firstItem="PaQ-G0-Gcq" firstAttribute="leading" secondItem="8m9-Ce-TWd" secondAttribute="leadingMargin" constant="10" id="kPt-QN-LZh"/>
                                         <constraint firstItem="aLz-27-WAl" firstAttribute="top" secondItem="PaQ-G0-Gcq" secondAttribute="top" id="rjD-9d-Dbf"/>
                                         <constraint firstItem="y3k-Or-h6B" firstAttribute="leading" secondItem="RuN-16-XCn" secondAttribute="trailing" constant="20" id="sLM-BW-C0m"/>
                                         <constraint firstItem="aLz-27-WAl" firstAttribute="bottom" secondItem="PaQ-G0-Gcq" secondAttribute="bottom" id="ugP-aW-D0e"/>
@@ -137,10 +89,8 @@ Help tips:
                                 <segue destination="Nwe-C7-iFI" kind="show" identifier="showMapView" id="a5s-rG-FYn"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Ybg-Ow-AS9">
-                            <color key="tintColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        </barButtonItem>
-                        <barButtonItem image="setting_item" id="SDR-98-RwD">
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Ybg-Ow-AS9"/>
+                        <barButtonItem image="Alert" id="SDR-98-RwD">
                             <connections>
                                 <segue destination="fc9-4P-Uav" kind="show" identifier="showSettingsView" id="c4l-jB-WWf"/>
                             </connections>
@@ -153,21 +103,21 @@ Help tips:
                                 <segue destination="Gcc-Gy-bHh" kind="presentation" identifier="showSearchView" id="3o9-Oe-Qk8"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="about" id="BHZ-KR-9Rj">
+                        <barButtonItem key="rightBarButtonItem" image="about" id="QtL-ej-p6B">
                             <connections>
-                                <segue destination="Mhw-oF-ue4" kind="show" identifier="showUserInfo" id="mFe-OH-tk9"/>
+                                <segue destination="TJw-Ea-epx" kind="show" id="KN6-1z-KCB"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="mapButton" destination="FiR-V4-gS0" id="ZHk-XY-S7R"/>
-                        <outlet property="searchButton" destination="S7K-3e-T6a" id="JxR-gD-qgu"/>
-                        <outlet property="settingButton" destination="SDR-98-RwD" id="Ian-oV-1HC"/>
+                        <outlet property="addButton" destination="S7K-3e-T6a" id="5dr-Sc-R4F"/>
+                        <outlet property="mapButton" destination="FiR-V4-gS0" id="Yap-Sj-uWB"/>
+                        <outlet property="settingButton" destination="SDR-98-RwD" id="9Kv-sr-wlL"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ef5-Ru-jGp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1847" y="-996"/>
+            <point key="canvasLocation" x="1574" y="-976"/>
         </scene>
         <!--Citys Map-->
         <scene sceneID="Ln7-vU-EFu">
@@ -185,7 +135,6 @@ Help tips:
                                 <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                             </mapView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="IwJ-qB-CvF" firstAttribute="top" secondItem="EfA-EL-DF6" secondAttribute="bottom" id="Dlb-O0-n0W"/>
                             <constraint firstItem="IwJ-qB-CvF" firstAttribute="leading" secondItem="7GK-HT-46c" secondAttribute="leadingMargin" constant="-16" id="F3n-Gx-7Zc"/>
@@ -195,7 +144,6 @@ Help tips:
                     </view>
                     <toolbarItems>
                         <barButtonItem systemItem="bookmarks" id="2Nr-kG-pON">
-                            <color key="tintColor" red="0.0" green="0.71764707569999997" blue="0.8078432083" alpha="1" colorSpace="deviceRGB"/>
                             <connections>
                                 <segue destination="Dl7-BZ-mAB" kind="popoverPresentation" identifier="showBookMark" popoverAnchorBarButtonItem="2Nr-kG-pON" id="iHG-us-gzr">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
@@ -211,7 +159,7 @@ Help tips:
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RJF-bZ-I9U" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1323" y="-106"/>
+            <point key="canvasLocation" x="1330" y="-106"/>
         </scene>
         <!--Book Mark Table View Controller-->
         <scene sceneID="Elg-6E-R2T">
@@ -231,7 +179,7 @@ Help tips:
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="City Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rOJ-41-fSB">
                                             <rect key="frame" x="8" y="8" width="295" height="28"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -250,7 +198,7 @@ Help tips:
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cXx-R7-ddl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1323" y="683"/>
+            <point key="canvasLocation" x="1330" y="683"/>
         </scene>
         <!--Settings View Controller-->
         <scene sceneID="hLP-V2-wB5">
@@ -391,7 +339,7 @@ Help tips:
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="48S-dC-kE9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1062" y="-976"/>
+            <point key="canvasLocation" x="750" y="-976"/>
         </scene>
         <!--Search View Controller-->
         <scene sceneID="qd3-fL-JGQ">
@@ -408,8 +356,6 @@ Help tips:
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="l0G-Uc-gPD">
                                 <rect key="frame" x="16" y="64" width="568" height="536"/>
                                 <color key="backgroundColor" red="0.74360233750000004" green="0.97170538539999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="separatorColor" red="0.74360233750000004" green="0.97170538539999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="sectionIndexBackgroundColor" red="0.74360233750000004" green="0.97170538539999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ResultCell" id="Lzb-gB-38j" customClass="SearchResultCell">
                                         <rect key="frame" x="0.0" y="0.0" width="568" height="44"/>
@@ -420,7 +366,7 @@ Help tips:
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5g1-Wd-AtH">
                                                     <rect key="frame" x="8" y="8" width="30" height="27"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -455,7 +401,6 @@ Help tips:
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GLa-pZ-wRv">
                                 <rect key="frame" x="536" y="20" width="48" height="44"/>
                                 <state key="normal" title="Cancel">
-                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -493,7 +438,7 @@ Help tips:
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wD9-08-nmg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3125" y="-1762"/>
+            <point key="canvasLocation" x="2493" y="-1818"/>
         </scene>
         <!--Detail-->
         <scene sceneID="g8r-tK-rV6">
@@ -507,30 +452,19 @@ Help tips:
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8DS-x4-G2D">
-                                <rect key="frame" x="250" y="250" width="100" height="100"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="dT6-0A-Z8w">
-                                        <rect key="frame" x="10" y="10" width="80" height="80"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="80" id="OlH-2U-swE"/>
-                                            <constraint firstAttribute="width" constant="80" id="Zc9-UI-tFS"/>
-                                        </constraints>
-                                    </activityIndicatorView>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                            <activityIndicatorView opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="c5c-Yg-Vhj">
+                                <rect key="frame" x="260" y="260" width="80" height="80"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="centerX" secondItem="dT6-0A-Z8w" secondAttribute="centerX" id="3V2-kF-rhL"/>
-                                    <constraint firstAttribute="height" constant="100" id="G7f-bw-2uw"/>
-                                    <constraint firstAttribute="width" constant="100" id="SFr-Ce-CYT"/>
-                                    <constraint firstAttribute="centerY" secondItem="dT6-0A-Z8w" secondAttribute="centerY" id="Vca-im-dvi"/>
+                                    <constraint firstAttribute="width" constant="80" id="7aS-07-e2t"/>
+                                    <constraint firstAttribute="height" constant="80" id="Loq-d4-JZG"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                         <integer key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
-                            </view>
+                            </activityIndicatorView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YOD-Lf-m0J">
                                 <rect key="frame" x="0.0" y="20" width="600" height="44"/>
                                 <items>
@@ -556,14 +490,12 @@ Help tips:
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="S1D-aY-UE0"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="16"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="8DS-x4-G2D" secondAttribute="centerX" id="41k-iO-UXt"/>
+                            <constraint firstAttribute="centerY" secondItem="c5c-Yg-Vhj" secondAttribute="centerY" id="5UK-9a-3ZW"/>
                             <constraint firstItem="tI5-Ni-kRn" firstAttribute="leading" secondItem="vlN-fz-UyD" secondAttribute="leadingMargin" constant="-16" id="D9D-Ly-MaJ"/>
                             <constraint firstItem="tI5-Ni-kRn" firstAttribute="top" secondItem="YOD-Lf-m0J" secondAttribute="bottom" id="EJs-GA-eUM"/>
                             <constraint firstAttribute="bottomMargin" secondItem="tI5-Ni-kRn" secondAttribute="bottom" id="IXT-ZQ-nGK"/>
@@ -573,7 +505,7 @@ Help tips:
                             <constraint firstItem="YOD-Lf-m0J" firstAttribute="leading" secondItem="vlN-fz-UyD" secondAttribute="leadingMargin" constant="-16" id="Z9N-uK-zLh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="YOD-Lf-m0J" secondAttribute="trailing" constant="-16" id="cMX-It-jPn"/>
                             <constraint firstItem="YOD-Lf-m0J" firstAttribute="top" secondItem="OZ7-cm-BDR" secondAttribute="top" id="kkk-tA-AtI"/>
-                            <constraint firstAttribute="centerY" secondItem="8DS-x4-G2D" secondAttribute="centerY" id="liv-Pt-gXM"/>
+                            <constraint firstAttribute="centerX" secondItem="c5c-Yg-Vhj" secondAttribute="centerX" id="lOM-bT-027"/>
                             <constraint firstItem="YOD-Lf-m0J" firstAttribute="bottom" secondItem="OZ7-cm-BDR" secondAttribute="bottom" id="ns8-jg-IfD"/>
                             <constraint firstItem="tI5-Ni-kRn" firstAttribute="trailing" secondItem="vlN-fz-UyD" secondAttribute="trailingMargin" constant="16" id="ry3-e3-NK6"/>
                         </constraints>
@@ -587,26 +519,74 @@ Help tips:
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="ActivityIndicator" destination="8DS-x4-G2D" id="FqV-YJ-lqh"/>
                         <outlet property="BaseScrollView" destination="tI5-Ni-kRn" id="Y2G-DL-dec"/>
+                        <outlet property="InternetIndicator" destination="c5c-Yg-Vhj" id="XHM-xL-7yG"/>
                         <outlet property="saveButton" destination="ygL-hn-tjf" id="BMS-r1-aHg"/>
                         <outlet property="title_name" destination="OZ7-cm-BDR" id="1hR-E2-KoK"/>
-                        <outlet property="toolbar" destination="YOD-Lf-m0J" id="T53-Ke-Rvz"/>
+                        <outlet property="toolbar" destination="YOD-Lf-m0J" id="Gyh-xR-U37"/>
                     </connections>
                 </viewController>
                 <exit id="zwB-be-jbL" userLabel="Exit" sceneMemberID="exit"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sMX-0Q-b56" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3125" y="-990"/>
+            <point key="canvasLocation" x="2411" y="-963"/>
+        </scene>
+        <!--Instructions-->
+        <scene sceneID="nae-pR-8y9">
+            <objects>
+                <viewController title="Instructions" hidesBottomBarWhenPushed="YES" id="TJw-Ea-epx" customClass="IntruductionViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="i66-uf-JED"/>
+                        <viewControllerLayoutGuide type="bottom" id="gFd-Og-fGj"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="DUM-6o-VhJ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7sK-Du-llf">
+                                <rect key="frame" x="16" y="64" width="568" height="536"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <string key="text">Show current weather condition and sever-day forecasts. It can match your current location and time of the day for more convenience. 
+Features: 
+-It shows all details: winds, pressure, humidity and a brief description. 
+-A plot of temperature for next week offers the trend of climate change. 
+-An interactive map shows all cities chosen in the list. Clicking a bookmark and selecting one city can lead to the location of the city. If the icon of that city is clicked, a label including some info will appear. The label can also be clicked for more details.
+-Search in the city list to add cities you prefer.
+-Set notification to alert you daily weather at any time you want.
+-Track all cities you prefer.
+Help tips:
+-Scroll down for more details and a plot.
+-Scroll left and right in the middle to see weather of next week.
+-Tap plus sign to add cities.
+-Tap info sign to get using guides
+-Tap map to see cities in a map.
+-Tap setting sign to set a notification.
+</string>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7sK-Du-llf" firstAttribute="top" secondItem="i66-uf-JED" secondAttribute="bottom" id="ZTJ-BX-fr4"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="7sK-Du-llf" secondAttribute="bottom" id="eq4-hz-aCi"/>
+                            <constraint firstItem="7sK-Du-llf" firstAttribute="leading" secondItem="DUM-6o-VhJ" secondAttribute="leadingMargin" id="jFZ-Mn-1Sc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="7sK-Du-llf" secondAttribute="trailing" id="omk-gT-tcT"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UIc-8x-Ogs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1574" y="-1818"/>
         </scene>
     </scenes>
     <resources>
+        <image name="Alert" width="25" height="25"/>
         <image name="about" width="25" height="25"/>
         <image name="map_item" width="25" height="25"/>
         <image name="map_sign" width="128" height="128"/>
-        <image name="setting_item" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="LAh-dB-mff"/>
+        <segue reference="2Gb-BX-cJY"/>
     </inferredMetricsTieBreakers>
 </document>
